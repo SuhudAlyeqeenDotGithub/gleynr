@@ -1,5 +1,5 @@
-import GleynrDashboard from '@/components/gleynr-dashboard'
+import GleynrDashboard from "@/components/dashboard";
 
-export default function Page() {
-  return <GleynrDashboard />
-}
+const Page = () => <GleynrDashboard />;
+
+export default Page;
