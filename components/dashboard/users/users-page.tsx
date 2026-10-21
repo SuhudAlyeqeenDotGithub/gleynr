@@ -9,10 +9,10 @@ import {
   ShieldCheck,
   UsersRound,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { SiteRecord } from "@/lib/sites/types";
 import type { User } from "@/lib/schemaAndTypes/zod/user";
 import { createSeedUsers } from "@/lib/users/seed";
-import MetricCard from "@/components/dashboard/overview/metric-card";
 import UserPermissionWizard from "./user-permission-wizard";
 import UserWorkspace from "./user-workspace";
 
@@ -25,6 +25,26 @@ type UsersPageProps = {
   sites: SiteRecord[];
   notify: (text: string) => void;
 };
+
+type UsersMetricProps = {
+  icon: LucideIcon;
+  label: string;
+  value: number;
+  note: string;
+};
+
+const UsersMetric = ({ icon: Icon, label, value, note }: UsersMetricProps) => (
+  <div className="metric-card">
+    <div className="metric-head">
+      <span>{label}</span>
+      <span className="metric-icon">
+        <Icon size={16} />
+      </span>
+    </div>
+    <div className="metric-value">{value}</div>
+    <div className="users-metric-note">{note}</div>
+  </div>
+);
 
 const displayName = (user: User) =>
   user.username?.trim() || user.email.split("@")[0];
@@ -106,7 +126,9 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
         onEditPermissions={() => setWizardUserId(selectedUser.id)}
         onUpdate={updateUser}
         onDelete={() => {
-          setUsers((current) => current.filter((user) => user.id !== selectedUser.id));
+          setUsers((current) =>
+            current.filter((user) => user.id !== selectedUser.id),
+          );
           setOpenUserId(null);
           notify(`${selectedUser.email} was removed from this workspace.`);
         }}
@@ -119,13 +141,17 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
     (user) => user.invitationStatus === "Pending",
   ).length;
   const activeCount = users.filter((user) => user.status === "Active").length;
-  const inactiveCount = users.filter((user) => user.status === "Inactive").length;
+  const inactiveCount = users.filter(
+    (user) => user.status === "Inactive",
+  ).length;
 
   return (
     <div className="page-content users-page">
       <div className="page-intro">
         <div>
-          <div className="eyebrow"><UsersRound size={14} /> Workspace</div>
+          <div className="eyebrow">
+            <UsersRound size={14} /> Workspace
+          </div>
           <h1>Users &amp; permissions</h1>
           <p>Manage who can access your organisation and what they can do.</p>
         </div>
@@ -135,17 +161,39 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
       </div>
 
       <div className="metrics-grid users-metrics">
-        <MetricCard icon={UsersRound} label="Total users" value={users.length} delta="Across this organisation" />
-        <MetricCard icon={Activity} label="Active users" value={activeCount} delta="Access enabled" />
-        <MetricCard icon={ShieldCheck} label="Inactive users" value={inactiveCount} delta="Access blocked" />
-        <MetricCard icon={Clock3} label="Pending invitations" value={pendingCount} delta="Awaiting acceptance" />
+        <UsersMetric
+          icon={UsersRound}
+          label="Total users"
+          value={users.length}
+          note="Across this organisation"
+        />
+        <UsersMetric
+          icon={Activity}
+          label="Active users"
+          value={activeCount}
+          note="Access enabled"
+        />
+        <UsersMetric
+          icon={ShieldCheck}
+          label="Inactive users"
+          value={inactiveCount}
+          note="Access blocked"
+        />
+        <UsersMetric
+          icon={Clock3}
+          label="Pending invitations"
+          value={pendingCount}
+          note="Awaiting acceptance"
+        />
       </div>
 
       <section className="panel users-list-panel">
         <div className="panel-head users-list-heading">
           <div>
             <h2>Organisation members</h2>
-            <p>{visibleUsers.length} of {users.length} accounts</p>
+            <p>
+              {visibleUsers.length} of {users.length} accounts
+            </p>
           </div>
         </div>
         <div className="users-toolbar">
@@ -160,39 +208,71 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
           </label>
           <label className="users-filter">
             <span>Account type</span>
-            <select value={accountFilter} onChange={(event) => setAccountFilter(event.target.value as UserFilter)}>
-              <option>All</option><option>Organization</option><option>User</option><option>Service</option>
+            <select
+              value={accountFilter}
+              onChange={(event) =>
+                setAccountFilter(event.target.value as UserFilter)
+              }
+            >
+              <option>All</option>
+              <option>Organization</option>
+              <option>User</option>
+              <option>Service</option>
             </select>
           </label>
           <label className="users-filter">
             <span>Status</span>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}>
-              <option>All</option><option>Active</option><option>Inactive</option>
+            <select
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(event.target.value as StatusFilter)
+              }
+            >
+              <option>All</option>
+              <option>Active</option>
+              <option>Inactive</option>
             </select>
           </label>
           <label className="users-filter">
             <span>Invitation</span>
-            <select value={invitationFilter} onChange={(event) => setInvitationFilter(event.target.value as InvitationFilter)}>
-              <option>All</option><option>Pending</option><option>Accepted</option><option>Not invited</option>
+            <select
+              value={invitationFilter}
+              onChange={(event) =>
+                setInvitationFilter(event.target.value as InvitationFilter)
+              }
+            >
+              <option>All</option>
+              <option>Pending</option>
+              <option>Accepted</option>
+              <option>Not invited</option>
             </select>
           </label>
         </div>
 
         {visibleUsers.length ? (
           <div className="users-table-scroll">
-            <div className="users-table" role="table" aria-label="Organisation members">
+            <div
+              className="users-table"
+              role="table"
+              aria-label="Organisation members"
+            >
               <div className="users-row users-table-head" role="row">
                 <span role="columnheader">Member</span>
                 <span role="columnheader">Account type</span>
                 <span role="columnheader">Status</span>
                 <span role="columnheader">Invitation</span>
                 <span role="columnheader">Created</span>
-                <span role="columnheader"><span className="sr-only">Actions</span></span>
+                <span role="columnheader">
+                  <span className="sr-only">Actions</span>
+                </span>
               </div>
               {visibleUsers.map((user) => (
                 <div className="users-row" role="row" key={user.id}>
                   <div className="user-identity" role="cell">
-                    <span className={`user-avatar ${user.accountType.toLowerCase()}`} aria-hidden="true">
+                    <span
+                      className={`user-avatar ${user.accountType.toLowerCase()}`}
+                      aria-hidden="true"
+                    >
                       {displayName(user).slice(0, 1).toUpperCase()}
                     </span>
                     <span className="user-identity-copy">
@@ -200,12 +280,40 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
                       <small>{user.email}</small>
                     </span>
                   </div>
-                  <span role="cell"><span className={`account-label ${user.accountType.toLowerCase()}`}>{user.accountType}</span></span>
-                  <span role="cell"><span className={`user-state ${user.status.toLowerCase()}`}><i />{user.status}</span></span>
-                  <span role="cell"><span className={`invitation-label ${user.invitationStatus.toLowerCase().replace(" ", "-")}`}>{user.invitationStatus}</span></span>
-                  <span className="user-created" role="cell">{user.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
+                  <span role="cell">
+                    <span
+                      className={`account-label ${user.accountType.toLowerCase()}`}
+                    >
+                      {user.accountType}
+                    </span>
+                  </span>
+                  <span role="cell">
+                    <span className={`user-state ${user.status.toLowerCase()}`}>
+                      <i />
+                      {user.status}
+                    </span>
+                  </span>
+                  <span role="cell">
+                    <span
+                      className={`invitation-label ${user.invitationStatus.toLowerCase().replace(" ", "-")}`}
+                    >
+                      {user.invitationStatus}
+                    </span>
+                  </span>
+                  <span className="user-created" role="cell">
+                    {user.createdAt.toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
                   <span className="users-row-action" role="cell">
-                    <button className="button secondary" onClick={() => setOpenUserId(user.id)}>Manage</button>
+                    <button
+                      className="button secondary"
+                      onClick={() => setOpenUserId(user.id)}
+                    >
+                      Manage
+                    </button>
                   </span>
                 </div>
               ))}
@@ -213,10 +321,22 @@ const UsersPage = ({ sites, notify }: UsersPageProps) => {
           </div>
         ) : (
           <div className="users-empty">
-            <div className="empty-icon"><UsersRound size={21} /></div>
-            <strong>{users.length ? "No members match these filters" : "No users yet"}</strong>
-            <p>{users.length ? "Adjust your search or filters to see more members." : "Add a user to start building your organisation workspace."}</p>
-            {!users.length && <button className="button primary" onClick={beginCreate}><Plus size={15} /> Add user</button>}
+            <div className="empty-icon">
+              <UsersRound size={21} />
+            </div>
+            <strong>
+              {users.length ? "No members match these filters" : "No users yet"}
+            </strong>
+            <p>
+              {users.length
+                ? "Adjust your search or filters to see more members."
+                : "Add a user to start building your organisation workspace."}
+            </p>
+            {!users.length && (
+              <button className="button primary" onClick={beginCreate}>
+                <Plus size={15} /> Add user
+              </button>
+            )}
           </div>
         )}
       </section>

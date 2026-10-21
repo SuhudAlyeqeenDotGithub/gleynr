@@ -1,4 +1,7 @@
-import { getDefaultPermissions, tabPermissionSettings } from "@/lib/schemaAndTypes/zod/accessAndPermission/defaultSettings";
+import {
+  getDefaultPermissions,
+  tabPermissionSettings,
+} from "@/lib/schemaAndTypes/zod/accessAndPermission/defaultSettings";
 import type { Permission, Tab, User } from "@/lib/schemaAndTypes/zod/user";
 
 type TabSeed = {
@@ -10,10 +13,12 @@ type TabSeed = {
 const makeTab = (key: string, seed: TabSeed): Tab => {
   const definition = tabPermissionSettings[key];
   const applyValues = (names: string[], values: Record<string, boolean> = {}) =>
-    getDefaultPermissions(names).map((permission): Permission => ({
-      ...permission,
-      hasAccess: values[permission.permission] ?? false,
-    }));
+    getDefaultPermissions(names).map(
+      (permission): Permission => ({
+        ...permission,
+        hasAccess: values[permission.permission] ?? false,
+      }),
+    );
 
   return {
     tab: key as Tab["tab"],
@@ -33,7 +38,15 @@ const makeTab = (key: string, seed: TabSeed): Tab => {
 };
 
 const makeUser = (
-  input: Pick<User, "id" | "username" | "status" | "accountType" | "createdAt" | "invitationStatus"> & {
+  input: Pick<
+    User,
+    | "id"
+    | "username"
+    | "status"
+    | "accountType"
+    | "createdAt"
+    | "invitationStatus"
+  > & {
     email: string;
     uid?: string;
     tabs: Record<string, TabSeed>;
@@ -48,7 +61,9 @@ const makeUser = (
   createdAt: input.createdAt,
   invitationStatus: input.invitationStatus,
   accessAndPermissions: {
-    tabAccess: Object.entries(input.tabs).map(([key, seed]) => makeTab(key, seed)),
+    tabAccess: Object.entries(input.tabs).map(([key, seed]) =>
+      makeTab(key, seed),
+    ),
   },
 });
 

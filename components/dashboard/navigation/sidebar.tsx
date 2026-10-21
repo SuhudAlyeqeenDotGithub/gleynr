@@ -49,7 +49,9 @@ const Sidebar = ({
   dark,
   mobileOpen,
 }: SidebarProps) => (
-  <aside className={`sidebar ${collapsed ? "collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
+  <aside
+    className={`sidebar ${collapsed ? "collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}
+  >
     <div className="sidebar-top">
       <Logo collapsed={collapsed} dark={dark} />
       <button

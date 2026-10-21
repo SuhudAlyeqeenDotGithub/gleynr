@@ -9,7 +9,13 @@ type HeaderProps = {
   onToggleNavigation: () => void;
 };
 
-const Header = ({ active, dark, setDark, onCommand, onToggleNavigation }: HeaderProps) => (
+const Header = ({
+  active,
+  dark,
+  setDark,
+  onCommand,
+  onToggleNavigation,
+}: HeaderProps) => (
   <header className="topbar">
     <div className="crumb">
       <span>Workspace</span>

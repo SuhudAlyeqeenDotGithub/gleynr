@@ -72,7 +72,8 @@ export const permissionValue = (
 export const canAccessTab = (user: User, tabKey: string): boolean =>
   user.accountType === "Organization" ||
   (user.status === "Active" &&
-    (resolveUserTabs(user).find((tab) => tab.tab === tabKey)?.hasAccess ?? false));
+    (resolveUserTabs(user).find((tab) => tab.tab === tabKey)?.hasAccess ??
+      false));
 
 export const canUseStandalonePermission = (
   user: User,
@@ -82,7 +83,8 @@ export const canUseStandalonePermission = (
   user.accountType === "Organization" ||
   (canAccessTab(user, tabKey) &&
     permissionValue(
-      resolveUserTabs(user).find((tab) => tab.tab === tabKey)?.standalonePermissions ?? [],
+      resolveUserTabs(user).find((tab) => tab.tab === tabKey)
+        ?.standalonePermissions ?? [],
       permissionName,
     ));
 

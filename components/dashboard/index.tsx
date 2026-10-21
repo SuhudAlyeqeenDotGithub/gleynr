@@ -56,7 +56,13 @@ const GleynrDashboard = () => {
         dark={dark}
         mobileOpen={mobileNavOpen}
       />
-      {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} />}
+      {mobileNavOpen && (
+        <button
+          className="mobile-nav-backdrop"
+          aria-label="Close navigation"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      )}
       <main className="main">
         <Header
           active={active}

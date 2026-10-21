@@ -3,6 +3,7 @@ export type TabPermissionSettings = {
   displayText: string;
   standalonePermissions: string[];
   recordLevelPermissions: string[];
+  recordSource?: "sites" | "users";
 };
 
 export const tabPermissionSettings: Record<string, TabPermissionSettings> = {
@@ -14,6 +15,7 @@ export const tabPermissionSettings: Record<string, TabPermissionSettings> = {
       "View Site Tokens",
       "Create Sites",
     ],
+    recordSource: "sites",
     recordLevelPermissions: [
       "View Overview",
       "View Floors and Areas",
@@ -27,6 +29,7 @@ export const tabPermissionSettings: Record<string, TabPermissionSettings> = {
     tab: "users",
     displayText: "users",
     standalonePermissions: ["Create Users"],
+    recordSource: "users",
     recordLevelPermissions: ["View User", "Manage User", "Delete User"],
   },
 };
