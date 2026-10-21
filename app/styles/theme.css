@@ -1,0 +1,68 @@
+:root {
+  --background: #f4f7f9;
+  --surface: #ffffff;
+  --raised: #f8fafb;
+  --primary: #087f8c;
+  --primary-soft: #e7f5f5;
+  --navy: #142b3b;
+  --foreground: #172b3a;
+  --muted: #64748b;
+  --border: #dce5e9;
+  --success: #138a68;
+  --success-soft: #e7f7f1;
+  --warning: #b7791f;
+  --warning-soft: #fff6dd;
+  --danger: #c05656;
+  --purple: #7657b8;
+  --shadow: 0 4px 18px rgba(20, 43, 59, 0.06);
+  --radius: 12px;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+.app-shell.dark {
+  --background: #0d1721;
+  --surface: #152330;
+  --raised: #1b2c3a;
+  --primary: #55c2c9;
+  --primary-soft: #193a40;
+  --navy: #f1f5f9;
+  --foreground: #f1f5f9;
+  --muted: #a4b4c2;
+  --border: #2a3b49;
+  --success: #66d6ae;
+  --success-soft: #193a35;
+  --warning: #f2c86b;
+  --warning-soft: #3a3220;
+  --danger: #f28a8a;
+  --purple: #bda5ed;
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  color-scheme: dark;
+}

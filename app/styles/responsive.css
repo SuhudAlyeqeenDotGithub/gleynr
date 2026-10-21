@@ -1,0 +1,128 @@
+@media (max-width: 1050px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    width: 76px;
+    flex-basis: 76px;
+    align-items: center;
+  }
+  .sidebar:not(.collapsed) {
+    width: 252px;
+    flex-basis: 252px;
+    align-items: stretch;
+  }
+  .sidebar.collapsed .nav-label {
+    display: none;
+  }
+  .sidebar.collapsed .nav-item {
+    justify-content: center;
+  }
+  .sidebar.collapsed .sidebar-bottom {
+    width: auto;
+  }
+  .sidebar.collapsed .collapse-button {
+    margin-left: auto;
+  }
+  .sidebar.collapsed .brand {
+    margin: auto;
+  }
+}
+@media (max-width: 680px) {
+  .topbar {
+    padding: 0 16px;
+    height: 60px;
+  }
+  .crumb span:first-child,
+  .crumb .slash {
+    display: none;
+  }
+  .command-trigger {
+    min-width: 32px;
+    width: 32px;
+    padding: 0;
+    justify-content: center;
+  }
+  .command-trigger span,
+  .command-trigger kbd {
+    display: none;
+  }
+  .page-content {
+    padding: 24px 16px 30px;
+  }
+  .page-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 21px;
+  }
+  .page-intro h1 {
+    font-size: 23px;
+  }
+  .intro-actions {
+    width: 100%;
+  }
+  .intro-actions .button:first-child {
+    flex: 1;
+  }
+  .metrics-grid {
+    gap: 10px;
+  }
+  .metric-card {
+    padding: 14px;
+  }
+  .metric-value {
+    font-size: 22px;
+  }
+  .metric-delta span {
+    display: none;
+  }
+  .panel {
+    padding: 16px;
+  }
+  .legend {
+    gap: 6px;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+  .table-row {
+    grid-template-columns: 1.5fr 0.8fr 0.8fr;
+  }
+  .table-row span:nth-child(4) {
+    display: none;
+  }
+  .override-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .override-banner .button {
+    margin-left: 44px;
+  }
+  .sidebar {
+    position: fixed;
+    z-index: 4;
+    height: 100vh;
+  }
+  .sidebar.collapsed {
+    width: 0;
+    flex-basis: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    border: 0;
+  }
+  .sidebar.collapsed + .main {
+    margin-left: 0;
+  }
+  .sidebar:not(.collapsed) + .main {
+    margin-left: 0;
+  }
+  .main {
+    width: 100%;
+  }
+  .header-avatar {
+    display: none;
+  }
+}
