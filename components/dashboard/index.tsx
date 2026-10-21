@@ -9,16 +9,25 @@ import Header from "@/components/dashboard/navigation/header";
 import Sidebar from "@/components/dashboard/navigation/sidebar";
 import OverviewPage from "@/components/dashboard/overview/overview-page";
 import SitesPage from "@/components/dashboard/sites/sites-page";
-import { SEEDED_SITES } from "@/lib/dashboard/constants";
-import type { ModalType, Site } from "@/lib/dashboard/types";
+import UsersPage from "@/components/dashboard/users/users-page";
+import CreateSiteDialog from "@/components/dashboard/sites/dialogs/create-site-dialog";
+import PurchaseTokensDialog from "@/components/dashboard/sites/dialogs/purchase-tokens-dialog";
+import { toDashboardSites } from "@/lib/sites/selectors";
+import { useSitesStore } from "@/lib/sites/use-sites-store";
+import type { ModalType } from "@/lib/dashboard/types";
 
 const GleynrDashboard = () => {
   const [active, setActive] = useState("Overview");
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [command, setCommand] = useState(false);
   const [modal, setModal] = useState<ModalType>(null);
-  const [sites, setSites] = useState<Site[]>(SEEDED_SITES);
+  const [siteDialog, setSiteDialog] = useState<"purchase" | "create" | null>(
+    null,
+  );
+  const [openSiteId, setOpenSiteId] = useState<string | null>(null);
+  const store = useSitesStore();
   const [toast, setToast] = useState("");
 
   const notify = (text: string) => {
@@ -26,25 +35,14 @@ const GleynrDashboard = () => {
     window.setTimeout(() => setToast(""), 2500);
   };
 
-  const submit = (value: string) => {
-    if (modal === "site") {
-      setSites([
-        ...sites,
-        {
-          id: Date.now(),
-          name: value,
-          location: "New location",
-          status: "Active",
-          visits: 0,
-          floors: 1,
-        },
-      ]);
-    }
-    notify(
-      modal === "site"
-        ? `${value} was added to your sites.`
-        : "Demo action completed successfully.",
-    );
+  const navigate = (page: string) => {
+    setActive(page);
+    setMobileNavOpen(false);
+    if (page === "Sites") setOpenSiteId(null);
+  };
+
+  const submit = () => {
+    notify("Demo action completed successfully.");
     setModal(null);
   };
 
@@ -52,26 +50,41 @@ const GleynrDashboard = () => {
     <div className={`app-shell ${dark ? "dark" : ""}`}>
       <Sidebar
         active={active}
-        setActive={setActive}
+        setActive={navigate}
         collapsed={collapsed}
         setCollapsed={setCollapsed}
         dark={dark}
+        mobileOpen={mobileNavOpen}
       />
+      {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} />}
       <main className="main">
         <Header
           active={active}
           dark={dark}
           setDark={setDark}
           onCommand={() => setCommand(true)}
+          onToggleNavigation={() => setMobileNavOpen((open) => !open)}
         />
         {active === "Overview" ? (
           <OverviewPage
-            sites={sites}
-            onNavigate={setActive}
-            onAddSite={() => setModal("site")}
+            sites={toDashboardSites(store.sites)}
+            onNavigate={navigate}
+            onAddSite={() => {
+              navigate("Sites");
+              setSiteDialog("create");
+            }}
           />
         ) : active === "Sites" ? (
-          <SitesPage sites={sites} setSites={setSites} onOpenModal={setModal} />
+          <SitesPage
+            store={store}
+            openSiteId={openSiteId}
+            onOpenSite={setOpenSiteId}
+            onPurchase={() => setSiteDialog("purchase")}
+            onCreate={() => setSiteDialog("create")}
+            notify={notify}
+          />
+        ) : active === "Users & permissions" ? (
+          <UsersPage sites={store.sites} notify={notify} />
         ) : (
           <GenericPage active={active} onOpenModal={setModal} />
         )}
@@ -79,7 +92,33 @@ const GleynrDashboard = () => {
       {command && (
         <CommandDialog
           onClose={() => setCommand(false)}
-          onNavigate={setActive}
+          onNavigate={navigate}
+        />
+      )}
+      {siteDialog === "purchase" && (
+        <PurchaseTokensDialog
+          tokens={store.tokens}
+          onClose={() => setSiteDialog(null)}
+          onConfirm={(quantity) => {
+            store.purchaseTokens(quantity);
+            notify(
+              `${quantity} site ${quantity === 1 ? "token" : "tokens"} added to your balance.`,
+            );
+          }}
+        />
+      )}
+      {siteDialog === "create" && (
+        <CreateSiteDialog
+          tokens={store.tokens}
+          sites={store.sites}
+          onCreate={store.createSite}
+          onPurchase={() => setSiteDialog("purchase")}
+          onClose={() => setSiteDialog(null)}
+          onCreated={(site) => {
+            setActive("Sites");
+            setOpenSiteId(site.id);
+            notify(`${site.name} was created using 1 token.`);
+          }}
         />
       )}
       {modal && (

@@ -1,0 +1,40 @@
+import { Receipt } from "lucide-react";
+import { formatCurrency, formatDate } from "@/lib/sites/selectors";
+import type { TokenTransaction } from "@/lib/sites/types";
+
+type TokenHistoryProps = {
+  transactions: TokenTransaction[];
+};
+
+const TokenHistory = ({ transactions }: TokenHistoryProps) => (
+  <section className="panel">
+    <div className="panel-head">
+      <div>
+        <h2>Token purchases</h2>
+        <p>Simulated transactions recorded in this session</p>
+      </div>
+      <Receipt size={16} />
+    </div>
+    <div className="table token-table">
+      <div className="table-row table-header">
+        <span>Reference</span>
+        <span>Date</span>
+        <span>Tokens</span>
+        <span>Total</span>
+      </div>
+      {transactions.map((item) => (
+        <div className="table-row" key={item.id}>
+          <span>
+            <strong>{item.reference}</strong>
+            <small>{formatCurrency(item.pricePerToken)} per token</small>
+          </span>
+          <span>{formatDate(item.purchasedAt)}</span>
+          <span>+{item.quantity}</span>
+          <span>{formatCurrency(item.total)}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
+export default TokenHistory;

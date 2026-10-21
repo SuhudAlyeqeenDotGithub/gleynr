@@ -9,20 +9,19 @@ import { Logo } from "@/components/general/Logo";
 
 type SidebarProps = {
   active: string;
-  setActive: StateSetter<string>;
+  setActive: (page: string) => void;
   collapsed: boolean;
   setCollapsed: StateSetter<boolean>;
   dark: boolean;
+  mobileOpen: boolean;
 };
 
 type NavItemProps = {
   item: NavigationItem;
   active: string;
-  setActive: StateSetter<string>;
+  setActive: (page: string) => void;
   collapsed: boolean;
 };
-
-
 
 const NavItem = ({ item, active, setActive, collapsed }: NavItemProps) => {
   const Icon = item.icon;
@@ -48,8 +47,9 @@ const Sidebar = ({
   collapsed,
   setCollapsed,
   dark,
+  mobileOpen,
 }: SidebarProps) => (
-  <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+  <aside className={`sidebar ${collapsed ? "collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
     <div className="sidebar-top">
       <Logo collapsed={collapsed} dark={dark} />
       <button

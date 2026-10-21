@@ -1,37 +1,43 @@
-import { useState } from "react";
-import { Building2 } from "lucide-react";
-import type { Site, StateSetter } from "@/lib/dashboard/types";
-import PageIntro from "../shared/page-intro";
-import SiteDetailPanel from "./site-detail-panel";
-import SitesTable from "./sites-table";
+import type { SitesStore } from "@/lib/sites/use-sites-store";
+import SitesOverview from "./overview/sites-overview";
+import SiteWorkspace from "./workspace/site-workspace";
 
 type SitesPageProps = {
-  sites: Site[];
-  setSites: StateSetter<Site[]>;
-  onOpenModal: (modal: "site") => void;
+  store: SitesStore;
+  openSiteId: string | null;
+  onOpenSite: (siteId: string | null) => void;
+  onPurchase: () => void;
+  onCreate: () => void;
+  notify: (text: string) => void;
 };
 
-const SitesPage = ({ sites, setSites, onOpenModal }: SitesPageProps) => {
-  const [selected, setSelected] = useState<Site | null>(null);
+const SitesPage = ({
+  store,
+  openSiteId,
+  onOpenSite,
+  onPurchase,
+  onCreate,
+  notify,
+}: SitesPageProps) => {
+  const site = store.sites.find((item) => item.id === openSiteId);
 
   return (
     <div className="page-content">
-      <PageIntro
-        icon={Building2}
-        title="Sites"
-        sub="Manage your organisation's buildings, floors, and areas."
-        action="Add site"
-        onAction={() => onOpenModal("site")}
-      />
-      <SitesTable
-        sites={sites}
-        onDelete={(siteId) =>
-          setSites(sites.filter((site) => site.id !== siteId))
-        }
-        onView={setSelected}
-      />
-      {selected && (
-        <SiteDetailPanel site={selected} onClose={() => setSelected(null)} />
+      {site ? (
+        <SiteWorkspace
+          key={site.id}
+          site={site}
+          store={store}
+          notify={notify}
+          onBack={() => onOpenSite(null)}
+        />
+      ) : (
+        <SitesOverview
+          store={store}
+          onOpenSite={onOpenSite}
+          onPurchase={onPurchase}
+          onCreate={onCreate}
+        />
       )}
     </div>
   );

@@ -5,5 +5,7 @@
 @import "./styles/dashboard.css";
 @import "./styles/data.css";
 @import "./styles/overlays.css";
+@import "./styles/sites.css";
+@import "./styles/users.css";
 @import "./styles/auth.css";
 @import "./styles/responsive.css";

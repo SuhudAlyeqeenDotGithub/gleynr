@@ -4,6 +4,7 @@ import {z} from "zod"
 export const eventSchema = z.object({
     timestamp: z.date(),
     type: z.string(),
+    areaId: z.string()
 })
 export type Event = z.infer<typeof eventSchema>
 
