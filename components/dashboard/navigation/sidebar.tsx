@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChevronDown, CircleHelp, Menu, MoreHorizontal } from "lucide-react";
 import {
   BILLING_NAVIGATION,
@@ -8,8 +9,8 @@ import type { NavigationItem, StateSetter } from "@/lib/dashboard/types";
 import { Logo } from "@/components/general/Logo";
 
 type SidebarProps = {
-  active: string;
-  setActive: (page: string) => void;
+  activeHref: string;
+  onNavigate: (href: string) => void;
   collapsed: boolean;
   setCollapsed: StateSetter<boolean>;
   dark: boolean;
@@ -18,18 +19,19 @@ type SidebarProps = {
 
 type NavItemProps = {
   item: NavigationItem;
-  active: string;
-  setActive: (page: string) => void;
+  activeHref: string;
+  onNavigate: (href: string) => void;
   collapsed: boolean;
 };
 
-const NavItem = ({ item, active, setActive, collapsed }: NavItemProps) => {
+const NavItem = ({ item, activeHref, onNavigate, collapsed }: NavItemProps) => {
   const Icon = item.icon;
 
   return (
-    <button
-      className={`nav-item ${active === item.label ? "active" : ""}`}
-      onClick={() => setActive(item.label)}
+    <Link
+      href={item.href}
+      className={`nav-item ${activeHref === item.href ? "active" : ""}`}
+      onClick={() => onNavigate(item.href)}
       title={collapsed ? item.label : undefined}
     >
       <Icon className="size-4 shrink-0" />
@@ -37,13 +39,13 @@ const NavItem = ({ item, active, setActive, collapsed }: NavItemProps) => {
       {!collapsed && item.label === "Data imports" && (
         <span className="nav-badge">2</span>
       )}
-    </button>
+    </Link>
   );
 };
 
 const Sidebar = ({
-  active,
-  setActive,
+  activeHref,
+  onNavigate,
   collapsed,
   setCollapsed,
   dark,
@@ -78,8 +80,8 @@ const Sidebar = ({
         <NavItem
           key={item.label}
           item={item}
-          active={active}
-          setActive={setActive}
+          activeHref={activeHref}
+          onNavigate={onNavigate}
           collapsed={collapsed}
         />
       ))}
@@ -88,8 +90,8 @@ const Sidebar = ({
         <NavItem
           key={item.label}
           item={item}
-          active={active}
-          setActive={setActive}
+          activeHref={activeHref}
+          onNavigate={onNavigate}
           collapsed={collapsed}
         />
       ))}
@@ -98,8 +100,8 @@ const Sidebar = ({
         <NavItem
           key={item.label}
           item={item}
-          active={active}
-          setActive={setActive}
+          activeHref={activeHref}
+          onNavigate={onNavigate}
           collapsed={collapsed}
         />
       ))}

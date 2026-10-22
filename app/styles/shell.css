@@ -6,11 +6,14 @@
 .sidebar {
   width: 252px;
   flex: 0 0 252px;
+  height: 100vh;
+  height: 100dvh;
   background: var(--surface);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 20px 14px 14px;
+  overflow: hidden;
   transition: width 0.2s ease;
 }
 .sidebar.collapsed {
@@ -100,9 +103,12 @@
 .nav-list {
   display: flex;
   flex-direction: column;
-
   gap: 3px;
   width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .nav-label {
   color: var(--muted);

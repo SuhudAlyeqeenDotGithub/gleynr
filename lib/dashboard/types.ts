@@ -17,6 +17,7 @@ export type ModalType = "site" | "import" | "user" | "plan" | "invoice" | null;
 export type NavigationItem = {
   label: string;
   icon: LucideIcon;
+  href: string;
 };
 
 export type PageDefinition = {

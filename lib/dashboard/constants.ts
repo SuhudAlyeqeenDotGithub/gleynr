@@ -15,25 +15,57 @@ import {
 import type { NavigationItem, PageDefinition, Site } from "./types";
 
 export const WORKSPACE_NAVIGATION: NavigationItem[] = [
-  { label: "Overview", icon: LayoutDashboard },
-  { label: "Sites", icon: Building2 },
-  { label: "Data imports", icon: FileUp },
-  { label: "Users & permissions", icon: Users },
+  { label: "Overview", icon: LayoutDashboard, href: "/main/overview" },
+  { label: "Sites", icon: Building2, href: "/main/sites" },
+  { label: "Data imports", icon: FileUp, href: "/main/data-imports" },
+  {
+    label: "Users & permissions",
+    icon: Users,
+    href: "/main/users-permissions",
+  },
 ];
 
 export const SETTINGS_NAVIGATION: NavigationItem[] = [
-  { label: "Analytics settings", icon: BarChart3 },
-  { label: "Organisation", icon: Globe2 },
-  { label: "My account", icon: ShieldCheck },
+  {
+    label: "Analytics settings",
+    icon: BarChart3,
+    href: "/main/analytics-settings",
+  },
+  { label: "Organisation", icon: Globe2, href: "/main/organisation" },
+  { label: "My account", icon: ShieldCheck, href: "/main/my-account" },
 ];
 
 export const BILLING_NAVIGATION: NavigationItem[] = [
-  { label: "Overview", icon: WalletCards },
-  { label: "Plans & subscription", icon: Package },
-  { label: "Usage & entitlements", icon: Gauge },
-  { label: "Payment methods", icon: CreditCard },
-  { label: "Billing history", icon: Database },
+  { label: "Overview", icon: WalletCards, href: "/main/billing-overview" },
+  {
+    label: "Plans & subscription",
+    icon: Package,
+    href: "/main/plans-subscription",
+  },
+  {
+    label: "Usage & entitlements",
+    icon: Gauge,
+    href: "/main/usage-entitlements",
+  },
+  {
+    label: "Payment methods",
+    icon: CreditCard,
+    href: "/main/payment-methods",
+  },
+  { label: "Billing history", icon: Database, href: "/main/billing-history" },
 ];
+
+export const ALL_NAVIGATION = [
+  ...WORKSPACE_NAVIGATION,
+  ...SETTINGS_NAVIGATION,
+  ...BILLING_NAVIGATION,
+];
+
+export const getNavigationItemByHref = (href: string) =>
+  ALL_NAVIGATION.find((item) => item.href === href);
+
+export const getNavigationHref = (label: string) =>
+  ALL_NAVIGATION.find((item) => item.label === label)?.href;
 
 export const SEEDED_SITES: Site[] = [
   {
