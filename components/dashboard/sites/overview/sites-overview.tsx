@@ -58,6 +58,8 @@ const SitesOverview = ({
         </div>
       )}
       <div className="sites-layout">
+        {" "}
+        <TokenHistory transactions={transactions} />
         <section className="panel sites-list-panel">
           <div className="toolbar">
             <div className="search-input">
@@ -86,16 +88,15 @@ const SitesOverview = ({
             )}
           </div>
         </section>
-        <section className="panel map-panel">
+        {/* <section className="panel map-panel">
           <SitesMap
             sites={filtered}
             highlightedId={hovered}
             onOpen={onOpenSite}
             onHover={setHovered}
           />
-        </section>
+        </section> */}
       </div>
-      <TokenHistory transactions={transactions} />
     </div>
   );
 };

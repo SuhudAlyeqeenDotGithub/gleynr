@@ -19,6 +19,8 @@ import { resolveUserTabs } from "@/lib/users/permissions";
 import Tabs from "@/components/dashboard/shared/tabs";
 
 type WorkspaceSection = "profile" | "access" | "actions";
+const accountClass = (type: User["accountType"]) =>
+  type.toLowerCase().replaceAll(" ", "-");
 type UserWorkspaceProps = {
   user: User;
   sites: SiteRecord[];
@@ -74,7 +76,7 @@ const UserWorkspace = ({
         </button>
         <div className="user-workspace-title">
           <span
-            className={`user-avatar large ${user.accountType.toLowerCase()}`}
+            className={`user-avatar large ${accountClass(user.accountType)}`}
             aria-hidden="true"
           >
             {(user.username || user.email).slice(0, 1).toUpperCase()}
@@ -117,7 +119,7 @@ const UserWorkspace = ({
                 <p>Account identity and current membership state.</p>
               </div>
               <span
-                className={`account-label ${user.accountType.toLowerCase()}`}
+                className={`account-label ${accountClass(user.accountType)}`}
               >
                 {user.accountType}
               </span>
@@ -319,28 +321,27 @@ const UserWorkspace = ({
                 </button>
               </div>
             )}
-            {user.invitationStatus === "Accepted" &&
-              user.accountType !== "Service" && (
-                <div className="account-action-row">
-                  <div>
-                    <strong>Password reset request</strong>
-                    <p>
-                      Request a password reset through Firebase Authentication
-                      in the future.
-                    </p>
-                  </div>
-                  <button
-                    className="button secondary"
-                    onClick={() =>
-                      notify(
-                        `Password reset request simulated for ${user.email}.`,
-                      )
-                    }
-                  >
-                    <KeyRound size={14} /> Simulate request
-                  </button>
+            {user.invitationStatus === "Accepted" && (
+              <div className="account-action-row">
+                <div>
+                  <strong>Password reset request</strong>
+                  <p>
+                    Request a password reset through Firebase Authentication in
+                    the future.
+                  </p>
                 </div>
-              )}
+                <button
+                  className="button secondary"
+                  onClick={() =>
+                    notify(
+                      `Password reset request simulated for ${user.email}.`,
+                    )
+                  }
+                >
+                  <KeyRound size={14} /> Simulate request
+                </button>
+              </div>
+            )}
             <div className="account-action-row">
               <div>
                 <strong>

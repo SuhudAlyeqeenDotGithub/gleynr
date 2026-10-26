@@ -20,16 +20,23 @@ import {
   tabPermissionSettings,
 } from "@/lib/schemaAndTypes/zod/accessAndPermission/defaultSettings";
 import type { Permission, Tab, User } from "@/lib/schemaAndTypes/zod/user";
+import type { UserType } from "@/lib/schemaAndTypes/zod/user";
 import { resolveUserTabs } from "@/lib/users/permissions";
+import type {
+  AddUserResult,
+  UserTokenSummary,
+} from "@/lib/users/use-users-store";
 import type { LocalUser } from "./users-page";
 
 type WizardProps = {
   users: LocalUser[];
   sites: SiteRecord[];
+  tokenSummaries: UserTokenSummary[];
   initialUser: User | null;
   onCancel: () => void;
-  onInvite: (user: User) => void;
+  onInvite: (user: User) => AddUserResult;
   onSave: (user: User) => void;
+  onPurchaseTokens: (type: UserType) => void;
 };
 
 type Step = "details" | "access" | "permissions" | "review" | "invite";
@@ -49,9 +56,9 @@ const makeDraft = (user: User | null): User => ({
   id: user?.id ?? "",
   email: user?.email ?? "",
   uid: user?.uid,
-  username: user?.username,
+  username: user?.username || "",
   status: user?.status ?? "Active",
-  accountType: user?.accountType ?? "User",
+  accountType: user?.accountType ?? "Internal User",
   accessAndPermissions: { tabAccess: resolveUserTabs(user ?? undefined) },
   createdAt: user?.createdAt ?? new Date(),
   invitationStatus: user?.invitationStatus ?? "Not invited",
@@ -83,14 +90,18 @@ const getRecords = (
 const UserPermissionWizard = ({
   users,
   sites,
+  tokenSummaries,
   initialUser,
   onCancel,
   onInvite,
   onSave,
+  onPurchaseTokens,
 }: WizardProps) => {
   const [draft, setDraft] = useState<User>(() => makeDraft(initialUser));
   const [step, setStep] = useState<Step>("details");
   const [emailError, setEmailError] = useState("");
+  const [capacityError, setCapacityError] = useState("");
+  const [inviteError, setInviteError] = useState("");
   const [selectedTabKey, setSelectedTabKey] = useState("");
   const [recordSearch, setRecordSearch] = useState("");
   const [recordFilter, setRecordFilter] = useState<RecordFilter>("All records");
@@ -99,6 +110,11 @@ const UserPermissionWizard = ({
   const [recordDraft, setRecordDraft] = useState<Permission[]>([]);
   const [bulkDraft, setBulkDraft] = useState<Record<string, BulkChoice>>({});
   const editing = initialUser !== null;
+  const selectedCapacity =
+    draft.accountType === "Organization"
+      ? undefined
+      : tokenSummaries.find((summary) => summary.type === draft.accountType);
+  const capacityBlocked = !editing && selectedCapacity?.remaining === 0;
   const centralTabs = Object.values(tabPermissionSettings);
   const grantedTabs = draft.accessAndPermissions.tabAccess.filter(
     (tab) => tab.hasAccess,
@@ -141,6 +157,12 @@ const UserPermissionWizard = ({
         ),
       },
     }));
+
+  const openTokenPurchase = (type: UserType) => {
+    setCapacityError("");
+    setInviteError("");
+    onPurchaseTokens(type);
+  };
 
   const toggleTabAccess = (tab: Tab) => {
     const nextAccess = !tab.hasAccess;
@@ -265,7 +287,12 @@ const UserPermissionWizard = ({
       );
       return false;
     }
+    if (selectedCapacity?.remaining === 0 && !editing) {
+      setCapacityError(`No ${draft.accountType.toLowerCase()} tokens remain.`);
+      return false;
+    }
     setEmailError("");
+    setCapacityError("");
     setDraft((current) => ({ ...current, email }));
     return true;
   };
@@ -285,13 +312,25 @@ const UserPermissionWizard = ({
       id: draft.id || `usr-${Date.now()}`,
       email: draft.email.trim(),
       uid: draft.uid || undefined,
-      username: draft.username || undefined,
+      username: draft.username?.trim() || undefined,
       status: editing ? draft.status : "Active",
       invitationStatus: editing ? draft.invitationStatus : "Pending",
       createdAt: editing ? draft.createdAt : new Date(),
     };
-    if (editing) onSave(savedUser);
-    else onInvite(savedUser);
+    if (editing) {
+      onSave(savedUser);
+      return;
+    }
+    const result = onInvite(savedUser);
+    if (result === "capacity") {
+      setInviteError(
+        `No ${draft.accountType.toLowerCase()} tokens remain. Purchase capacity to continue.`,
+      );
+    } else if (result === "duplicate") {
+      setInviteError("A user record already exists for this email address.");
+    } else {
+      setInviteError("");
+    }
   };
 
   const title = editing ? "Configure user access" : "Add a user";
@@ -386,36 +425,49 @@ const UserPermissionWizard = ({
             </label>
             <label className="wizard-field">
               <span>
-                Account type <b aria-hidden="true">*</b>
+                User type <b aria-hidden="true">*</b>
               </span>
               <select
                 value={draft.accountType}
                 disabled={editing}
-                onChange={(event) =>
+                onChange={(event) => {
+                  setCapacityError("");
+                  setInviteError("");
                   setDraft((current) => ({
                     ...current,
                     accountType: event.target.value as User["accountType"],
-                  }))
-                }
+                  }));
+                }}
               >
-                <option value="User">User · standard member</option>
-                <option value="Service">
-                  Service · reserved for future use
+                <option value="Internal User">
+                  Internal user · organisation member
                 </option>
-                <option
-                  value="Organization"
-                  disabled={users.some(
-                    (user) => user.accountType === "Organization",
-                  )}
-                >
-                  Organization · unrestricted administrator
+                <option value="External User">
+                  External user · client-side account
                 </option>
               </select>
-              {draft.accountType === "Organization" && (
-                <small className="field-note">
-                  Organization accounts always have unrestricted access and
-                  cannot be deactivated or deleted.
-                </small>
+              <small className="field-note">
+                {selectedCapacity
+                  ? `${selectedCapacity.remaining} of ${selectedCapacity.capacity} ${draft.accountType.toLowerCase()} tokens available.`
+                  : "Organisation administrator access is protected."}
+              </small>
+              {capacityError && (
+                <span className="field-error" role="alert">
+                  {capacityError}
+                </span>
+              )}
+              {capacityBlocked && (
+                <div className="capacity-blocked-callout">
+                  <span>No capacity is available for this user type.</span>
+                  <button
+                    className="button secondary"
+                    onClick={() =>
+                      openTokenPurchase(draft.accountType as UserType)
+                    }
+                  >
+                    Purchase {draft.accountType.toLowerCase()} tokens
+                  </button>
+                </div>
               )}
             </label>
             {editing && (
@@ -510,12 +562,6 @@ const UserPermissionWizard = ({
                 )}
               </section>
             </div>
-            {draft.accountType === "Organization" && (
-              <div className="inline-notice protected-note">
-                <LockKeyhole size={15} /> The Organization account is
-                unrestricted. Its access is not configurable here.
-              </div>
-            )}
           </div>
         )}
 
@@ -851,7 +897,7 @@ const UserPermissionWizard = ({
             </div>
             <div className="review-identity">
               <span
-                className={`user-avatar ${draft.accountType.toLowerCase()}`}
+                className={`user-avatar ${draft.accountType.toLowerCase().replaceAll(" ", "-")}`}
               >
                 <span>
                   {(draft.username || draft.email || "U")
@@ -936,6 +982,24 @@ const UserPermissionWizard = ({
               <span>Invitation</span>
               <strong>{editing ? draft.invitationStatus : "Pending"}</strong>
             </div>
+            {inviteError && (
+              <div
+                className="capacity-blocked-callout invite-capacity-error"
+                role="alert"
+              >
+                <span>{inviteError}</span>
+                {draft.accountType !== "Organization" && (
+                  <button
+                    className="button secondary"
+                    onClick={() =>
+                      openTokenPurchase(draft.accountType as UserType)
+                    }
+                  >
+                    Purchase tokens
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
 

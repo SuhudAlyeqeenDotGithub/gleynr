@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { tabPermissionSettings } from "./accessAndPermission/defaultSettings";
 
+export const userTypeSchema = z.enum(["Internal User", "External User"]);
+export type UserType = z.infer<typeof userTypeSchema>;
+
 // permission schema and type
 export const permissionObject = z.object({
   permission: z.string(),
@@ -29,11 +32,11 @@ export type Tab = z.infer<typeof tabSchema>;
 // user schema and type
 export const userSchema = z.object({
   id: z.string(),
-  email: z.string().email(),
-  uid: z.string().nullable().optional(),
-  username: z.string().nullable().optional(),
+  email: z.email(),
+  uid: z.string().optional(),
+  username: z.string().optional(),
   status: z.enum(["Active", "Inactive"]),
-  accountType: z.enum(["Service", "User", "Organization"]),
+  accountType: z.enum(["Internal User", "External User", "Organization"]),
   accessAndPermissions: z.object({
     tabAccess: z.array(tabSchema),
   }),

@@ -24,11 +24,13 @@ export const OverviewRoute = () => {
 };
 
 export const SectionRoute = ({ label }: { label: string }) => {
-  const { store, notify } = useDashboardContext();
+  const { store, usersStore, notify } = useDashboardContext();
   const [modal, setModal] = useState<ModalType>(null);
 
   if (label === "Users & permissions") {
-    return <UsersPage sites={store.sites} notify={notify} />;
+    return (
+      <UsersPage sites={store.sites} userStore={usersStore} notify={notify} />
+    );
   }
 
   return (

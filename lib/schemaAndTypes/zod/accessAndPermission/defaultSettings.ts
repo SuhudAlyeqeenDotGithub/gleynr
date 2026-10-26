@@ -28,13 +28,15 @@ export const tabPermissionSettings: Record<string, TabPermissionSettings> = {
   users: {
     tab: "users",
     displayText: "users",
-    standalonePermissions: ["Create Users"],
+    standalonePermissions: [
+      "Create Users",
+      "View User Tokens",
+      "Purchase User Tokens",
+    ],
     recordSource: "users",
     recordLevelPermissions: ["View User", "Manage User", "Delete User"],
   },
 };
-
-
 
 export const getDefaultPermissions = (permissions: string[]) => {
   return permissions.map((permission) => ({

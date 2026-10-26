@@ -7,18 +7,24 @@ import { Check } from "lucide-react";
 import { getNavigationHref } from "@/lib/dashboard/constants";
 import type { SitesStore } from "@/lib/sites/use-sites-store";
 import { useSitesStore } from "@/lib/sites/use-sites-store";
+import { useUsersStore } from "@/lib/users/use-users-store";
+import type { UsersStore } from "@/lib/users/use-users-store";
 
 export type DashboardContextValue = {
   store: SitesStore;
+  usersStore: UsersStore;
   notify: (text: string) => void;
   navigate: (page: string) => void;
 };
 
-export const DashboardContext = createContext<DashboardContextValue | null>(null);
+export const DashboardContext = createContext<DashboardContextValue | null>(
+  null,
+);
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const store = useSitesStore();
+  const usersStore = useUsersStore();
   const [toast, setToast] = useState("");
 
   const notify = (text: string) => {
@@ -32,7 +38,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DashboardContext.Provider value={{ store, notify, navigate }}>
+    <DashboardContext.Provider value={{ store, usersStore, notify, navigate }}>
       {children}
       {toast && (
         <div className="toast">
@@ -46,7 +52,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
   if (!context) {
-    throw new Error("Dashboard pages must be rendered inside the dashboard layout.");
+    throw new Error(
+      "Dashboard pages must be rendered inside the dashboard layout.",
+    );
   }
   return context;
 };
