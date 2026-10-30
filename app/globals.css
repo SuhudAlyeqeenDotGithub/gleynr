@@ -12,5 +12,6 @@
 @import "./styles/usage-bills.css";
 @import "./styles/invoices.css";
 @import "./styles/billing-info.css";
+@import "./styles/pagination.css";
 @import "./styles/auth.css";
 @import "./styles/responsive.css";

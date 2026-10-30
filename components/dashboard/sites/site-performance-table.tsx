@@ -1,6 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Site } from "@/lib/dashboard/types";
 import SiteStatus from "../shared/site-status";
+import Pagination from "../shared/pagination";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 
 type SitePerformanceTableProps = {
   sites: Site[];
@@ -10,7 +12,9 @@ type SitePerformanceTableProps = {
 const SitePerformanceTable = ({
   sites,
   onViewAll,
-}: SitePerformanceTableProps) => (
+}: SitePerformanceTableProps) => {
+  const { rows, pagination } = useLocalPage(sites, "site-performance");
+  return (
   <section className="panel">
     <div className="panel-head">
       <div>
@@ -28,7 +32,7 @@ const SitePerformanceTable = ({
         <span>Visits</span>
         <span>Floors</span>
       </div>
-      {sites.map((site) => (
+      {rows.map((site) => (
         <div className="table-row" key={site.id}>
           <span>
             <strong>{site.name}</strong>
@@ -42,7 +46,9 @@ const SitePerformanceTable = ({
         </div>
       ))}
     </div>
+    <Pagination controls={pagination} label="sites" />
   </section>
-);
+  );
+};
 
 export default SitePerformanceTable;

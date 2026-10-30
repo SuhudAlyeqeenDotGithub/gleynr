@@ -13,6 +13,8 @@ import type { LucideIcon } from "lucide-react";
 import type { SiteRecord } from "@/lib/sites/types";
 import type { User, UserType } from "@/lib/schemaAndTypes/zod/user";
 import type { UsersStore } from "@/lib/users/use-users-store";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
+import Pagination from "../shared/pagination";
 import UserPermissionWizard from "./user-permission-wizard";
 import UserWorkspace from "./user-workspace";
 import UserTokenPurchaseDialog from "./user-token-purchase-dialog";
@@ -108,6 +110,10 @@ const UsersPage = ({ sites, userStore, notify }: UsersPageProps) => {
       );
     });
   }, [users, search, accountFilter, statusFilter, invitationFilter]);
+  const { rows: pagedUsers, pagination } = useLocalPage(
+    visibleUsers,
+    `${search}|${accountFilter}|${statusFilter}|${invitationFilter}`,
+  );
 
   const beginCreate = () => {
     setOpenUserId(null);
@@ -332,7 +338,7 @@ const UsersPage = ({ sites, userStore, notify }: UsersPageProps) => {
                   <span className="sr-only">Actions</span>
                 </span>
               </div>
-              {visibleUsers.map((user) => (
+              {pagedUsers.map((user) => (
                 <div className="users-row" role="row" key={user.id}>
                   <div className="user-identity" role="cell">
                     <span
@@ -405,6 +411,7 @@ const UsersPage = ({ sites, userStore, notify }: UsersPageProps) => {
             )}
           </div>
         )}
+        <Pagination controls={pagination} label="members" />
       </section>
       {purchaseDialog}
     </div>

@@ -6,6 +6,8 @@ import {
   getPeriodTotal,
 } from "@/lib/usage-bills/calculations";
 import type { BillingPeriod } from "@/lib/usage-bills/types";
+import Pagination from "@/components/dashboard/shared/pagination";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import BillingStatusLabel from "./billing-status";
 
 type BillingHistoryTableProps = {
@@ -18,7 +20,10 @@ const BillingHistoryTable = ({
   periods,
   selectedId,
   onSelect,
-}: BillingHistoryTableProps) => (
+}: BillingHistoryTableProps) => {
+  const { rows, pagination } = useLocalPage(periods, "bills");
+  return (
+  <>
   <div className="bl-table-wrap">
     <table className="bl-table">
       <thead>
@@ -40,7 +45,7 @@ const BillingHistoryTable = ({
         </tr>
       </thead>
       <tbody>
-        {periods.map((period) => {
+        {rows.map((period) => {
           const breakdown = buildBreakdown(period);
           const total = getPeriodTotal(period, breakdown);
           const estimate = breakdown.basis === "estimate";
@@ -99,6 +104,9 @@ const BillingHistoryTable = ({
       </tbody>
     </table>
   </div>
-);
+  <Pagination controls={pagination} label="billing periods" flush />
+  </>
+  );
+};
 
 export default BillingHistoryTable;

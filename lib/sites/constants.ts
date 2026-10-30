@@ -74,5 +74,4 @@ export const IMPORT_FORMATS: { value: ImportFormat; label: string }[] = [
   { value: "json", label: "JSON" },
 ];
 
-export const IMPORT_PREVIEW_ROWS = 8;
 export const IMPORT_MAX_VISIBLE_ISSUES = 25;

@@ -3,11 +3,12 @@ import { Layers, Plus } from "lucide-react";
 import type { Floor } from "@/lib/schemaAndTypes/zod/floor";
 import type { SiteRecord } from "@/lib/sites/types";
 import type { SitesStore } from "@/lib/sites/use-sites-store";
-import { usePaged } from "@/lib/sites/use-paged";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import ConfirmDialog from "../../dialogs/confirm-dialog";
 import EmptyState from "../../shared/empty-state";
 import EntityTile from "../../shared/entity-tile";
 import ListToolbar from "../../shared/list-toolbar";
+import Pagination from "../../shared/pagination";
 import FloorDialog from "./floor-dialog";
 
 type FloorsViewProps = {
@@ -51,7 +52,7 @@ const FloorsView = ({ site, store, notify, onOpenFloor }: FloorsViewProps) => {
         (occupancy === "with") === floor.areas.length > 0) &&
       (!type || floor.areas.some((area) => area.type === type)),
   );
-  const { visible, remaining, showMore } = usePaged(
+  const { rows: visible, pagination } = useLocalPage(
     filtered,
     `${query}|${occupancy}|${type}`,
   );
@@ -120,14 +121,7 @@ const FloorsView = ({ site, store, notify, onOpenFloor }: FloorsViewProps) => {
                   />
                 ))}
               </div>
-              {remaining > 0 && (
-                <button
-                  className="button secondary show-more"
-                  onClick={showMore}
-                >
-                  Show more ({remaining} remaining)
-                </button>
-              )}
+              <Pagination controls={pagination} label="floors" />
             </>
           ) : (
             <EmptyState text="No floors match your search or filters." />

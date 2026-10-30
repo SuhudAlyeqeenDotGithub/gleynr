@@ -1,6 +1,8 @@
 import { ChevronRight, History } from "lucide-react";
 import { formatDate } from "@/lib/plans/selectors";
 import type { SubscriptionRecord } from "@/lib/plans/types";
+import Pagination from "@/components/dashboard/shared/pagination";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import BillingSection from "../shared/billing-section";
 import { getPlanIcon } from "./plan-icons";
 import SubscriptionStatus from "./subscription-status";
@@ -24,7 +26,9 @@ type SubscriptionHistoryProps = {
 const SubscriptionHistory = ({
   subscriptions,
   onInspect,
-}: SubscriptionHistoryProps) => (
+}: SubscriptionHistoryProps) => {
+  const { rows, pagination } = useLocalPage(subscriptions, "history");
+  return (
   <BillingSection
     id="plans-history-title"
     icon={History}
@@ -45,7 +49,7 @@ const SubscriptionHistory = ({
           </tr>
         </thead>
         <tbody>
-          {subscriptions.map((subscription) => {
+          {rows.map((subscription) => {
             const Icon = getPlanIcon(subscription.plan);
             return (
               <tr
@@ -88,7 +92,9 @@ const SubscriptionHistory = ({
         </tbody>
       </table>
     </div>
+    <Pagination controls={pagination} label="subscriptions" flush />
   </BillingSection>
-);
+  );
+};
 
 export default SubscriptionHistory;

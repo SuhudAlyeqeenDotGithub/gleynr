@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Coins, Plus, Search } from "lucide-react";
 import type { SitesStore } from "@/lib/sites/use-sites-store";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import EmptyState from "../../shared/empty-state";
+import Pagination from "../../shared/pagination";
 import SiteCard from "./site-card";
 import SitesMap from "./sites-map";
 import TokenHistory from "./token-history";
@@ -26,6 +28,7 @@ const SitesOverview = ({
   const filtered = sites.filter((site) =>
     `${site.name} ${site.location}`.toLowerCase().includes(query.toLowerCase()),
   );
+  const { rows, pagination } = useLocalPage(filtered, query);
 
   return (
     <div className="sites-stack">
@@ -74,7 +77,7 @@ const SitesOverview = ({
           </div>
           <div className="site-card-list">
             {filtered.length ? (
-              filtered.map((site) => (
+              rows.map((site) => (
                 <SiteCard
                   key={site.id}
                   site={site}
@@ -87,6 +90,7 @@ const SitesOverview = ({
               <EmptyState text="No sites match your search." />
             )}
           </div>
+          <Pagination controls={pagination} label="sites" />
         </section>
         {/* <section className="panel map-panel">
           <SitesMap

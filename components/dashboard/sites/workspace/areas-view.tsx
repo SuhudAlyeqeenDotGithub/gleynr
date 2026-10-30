@@ -5,12 +5,13 @@ import type { Floor } from "@/lib/schemaAndTypes/zod/floor";
 import { GENDER_GROUPS } from "@/lib/sites/constants";
 import type { SiteRecord } from "@/lib/sites/types";
 import type { SitesStore } from "@/lib/sites/use-sites-store";
-import { usePaged } from "@/lib/sites/use-paged";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import ConfirmDialog from "../../dialogs/confirm-dialog";
 import Breadcrumb from "../../shared/breadcrumb";
 import EmptyState from "../../shared/empty-state";
 import EntityTile from "../../shared/entity-tile";
 import ListToolbar from "../../shared/list-toolbar";
+import Pagination from "../../shared/pagination";
 import AreaDialog from "./area-dialog";
 
 type AreasViewProps = {
@@ -39,7 +40,7 @@ const AreasView = ({ site, floor, store, notify, onBack }: AreasViewProps) => {
       (!type || area.type === type) &&
       (!gender || area.genderGroup === gender),
   );
-  const { visible, remaining, showMore } = usePaged(
+  const { rows: visible, pagination } = useLocalPage(
     filtered,
     `${floor.id}|${query}|${type}|${gender}`,
   );
@@ -121,14 +122,7 @@ const AreasView = ({ site, floor, store, notify, onBack }: AreasViewProps) => {
                   />
                 ))}
               </div>
-              {remaining > 0 && (
-                <button
-                  className="button secondary show-more"
-                  onClick={showMore}
-                >
-                  Show more ({remaining} remaining)
-                </button>
-              )}
+              <Pagination controls={pagination} label="areas" />
             </>
           ) : (
             <EmptyState text="No areas match your search or filters." />

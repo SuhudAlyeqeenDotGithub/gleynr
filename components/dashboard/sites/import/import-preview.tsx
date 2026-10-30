@@ -1,7 +1,8 @@
 import { CheckCircle2 } from "lucide-react";
 import type { SiteLevelEvent } from "@/lib/schemaAndTypes/zod/event";
-import { IMPORT_PREVIEW_ROWS } from "@/lib/sites/constants";
 import type { SiteRecord } from "@/lib/sites/types";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
+import Pagination from "../../shared/pagination";
 
 type ImportPreviewProps = {
   site: SiteRecord;
@@ -18,6 +19,7 @@ const ImportPreview = ({
   onConfirm,
   onDiscard,
 }: ImportPreviewProps) => {
+  const { rows, offset, pagination } = useLocalPage(events, "import-preview");
   const floorName = (id: string) =>
     site.floors.find((floor) => floor.id === id)?.name ?? id;
   const areaName = (floorId: string, id: string) =>
@@ -48,9 +50,9 @@ const ImportPreview = ({
             </tr>
           </thead>
           <tbody>
-            {events.slice(0, IMPORT_PREVIEW_ROWS).map((event, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
+            {rows.map((event, index) => (
+              <tr key={offset + index}>
+                <td>{offset + index + 1}</td>
                 <td>{event.timestamp.toISOString()}</td>
                 <td>{event.type}</td>
                 <td>{floorName(event.floorId)}</td>
@@ -60,11 +62,7 @@ const ImportPreview = ({
           </tbody>
         </table>
       </div>
-      {events.length > IMPORT_PREVIEW_ROWS && (
-        <p className="muted-copy">
-          Showing {IMPORT_PREVIEW_ROWS} of {events.length} rows.
-        </p>
-      )}
+      <Pagination controls={pagination} label="rows" />
       <div className="confirm-bar">
         <span>
           Confirming adds {events.length} events to <strong>{target}</strong> in

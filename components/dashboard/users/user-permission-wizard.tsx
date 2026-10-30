@@ -27,6 +27,8 @@ import type {
   UserTokenSummary,
 } from "@/lib/users/use-users-store";
 import type { LocalUser } from "./users-page";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
+import Pagination from "../shared/pagination";
 
 type WizardProps = {
   users: LocalUser[];
@@ -146,6 +148,10 @@ const UserPermissionWizard = ({
         (recordFilter === "Configured" ? configured : !configured))
     );
   });
+  const { rows: pageRecords, pagination: recordPagination } = useLocalPage(
+    visibleRecords,
+    `${selectedTabKey}|${recordSearch}|${recordFilter}`,
+  );
   const currentStepIndex = steps.findIndex((item) => item.value === step);
 
   const updateTab = (key: string, update: (tab: Tab) => Tab) =>
@@ -711,8 +717,8 @@ const UserPermissionWizard = ({
                               <input
                                 type="checkbox"
                                 checked={
-                                  visibleRecords.length > 0 &&
-                                  visibleRecords.every((record) =>
+                                  pageRecords.length > 0 &&
+                                  pageRecords.every((record) =>
                                     selectedRecords.includes(record.id),
                                   )
                                 }
@@ -722,14 +728,14 @@ const UserPermissionWizard = ({
                                       ? [
                                           ...new Set([
                                             ...current,
-                                            ...visibleRecords.map(
+                                            ...pageRecords.map(
                                               (record) => record.id,
                                             ),
                                           ]),
                                         ]
                                       : current.filter(
                                           (id) =>
-                                            !visibleRecords.some(
+                                            !pageRecords.some(
                                               (record) => record.id === id,
                                             ),
                                         ),
@@ -790,7 +796,7 @@ const UserPermissionWizard = ({
                             </div>
                           )}
                           <div className="record-permission-list">
-                            {visibleRecords.map((record) => {
+                            {pageRecords.map((record) => {
                               const configured =
                                 activeTab.recordLevelPermissions.some(
                                   (item) => item.recordId === record.id,
@@ -843,6 +849,10 @@ const UserPermissionWizard = ({
                               </div>
                             )}
                           </div>
+                          <Pagination
+                            controls={recordPagination}
+                            label="records"
+                          />
                           {editingRecordId && (
                             <RecordEditor
                               record={recordList.find(

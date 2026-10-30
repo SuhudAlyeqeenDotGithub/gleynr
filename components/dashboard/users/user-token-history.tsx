@@ -1,5 +1,7 @@
 import { Receipt } from "lucide-react";
 import type { UserTokenPurchase } from "@/lib/users/use-users-store";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
+import Pagination from "../shared/pagination";
 
 type UserTokenHistoryProps = {
   purchases: UserTokenPurchase[];
@@ -19,7 +21,9 @@ const formatDate = (date: Date) =>
     timeZone: "UTC",
   }).format(date);
 
-const UserTokenHistory = ({ purchases }: UserTokenHistoryProps) => (
+const UserTokenHistory = ({ purchases }: UserTokenHistoryProps) => {
+  const { rows, pagination } = useLocalPage(purchases, "user-token-history");
+  return (
   <section className="panel user-token-history-panel">
     <div className="panel-head">
       <div>
@@ -42,7 +46,7 @@ const UserTokenHistory = ({ purchases }: UserTokenHistoryProps) => (
             <span role="columnheader">Tokens</span>
             <span role="columnheader">Monthly total</span>
           </div>
-          {purchases.map((purchase) => (
+          {rows.map((purchase) => (
             <div
               className="user-token-history-row"
               role="row"
@@ -67,7 +71,9 @@ const UserTokenHistory = ({ purchases }: UserTokenHistoryProps) => (
         <span>Confirmed simulated purchases will appear here.</span>
       </div>
     )}
+    <Pagination controls={pagination} label="purchases" />
   </section>
-);
+  );
+};
 
 export default UserTokenHistory;

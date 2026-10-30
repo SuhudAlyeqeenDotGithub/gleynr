@@ -1,12 +1,16 @@
 import { Receipt } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/sites/selectors";
 import type { TokenTransaction } from "@/lib/sites/types";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
+import Pagination from "../../shared/pagination";
 
 type TokenHistoryProps = {
   transactions: TokenTransaction[];
 };
 
-const TokenHistory = ({ transactions }: TokenHistoryProps) => (
+const TokenHistory = ({ transactions }: TokenHistoryProps) => {
+  const { rows, pagination } = useLocalPage(transactions, "token-history");
+  return (
   <section className="panel">
     <div className="panel-head">
       <div>
@@ -22,7 +26,7 @@ const TokenHistory = ({ transactions }: TokenHistoryProps) => (
         <span>Tokens</span>
         <span>Total</span>
       </div>
-      {transactions.map((item) => (
+      {rows.map((item) => (
         <div className="table-row" key={item.id}>
           <span>
             <strong>{item.reference}</strong>
@@ -34,7 +38,9 @@ const TokenHistory = ({ transactions }: TokenHistoryProps) => (
         </div>
       ))}
     </div>
+    <Pagination controls={pagination} label="purchases" />
   </section>
-);
+  );
+};
 
 export default TokenHistory;

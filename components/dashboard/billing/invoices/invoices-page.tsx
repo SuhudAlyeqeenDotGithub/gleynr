@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { FileText, Receipt } from "lucide-react";
 import EmptyState from "@/components/dashboard/shared/empty-state";
 import ListToolbar from "@/components/dashboard/shared/list-toolbar";
+import Pagination from "@/components/dashboard/shared/pagination";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import {
   INVOICE_STATUSES,
   countByStatus,
@@ -29,6 +31,7 @@ const InvoicesPage = ({ notify }: { notify: (text: string) => void }) => {
     [invoices, filter, query],
   );
   const selected = invoices.find((invoice) => invoice.id === selectedId);
+  const { rows, pagination } = useLocalPage(visible, `${filter}|${query}`);
 
   return (
     <div className="page-content bl-page">
@@ -77,7 +80,10 @@ const InvoicesPage = ({ notify }: { notify: (text: string) => void }) => {
           </ListToolbar>
         </div>
         {visible.length > 0 ? (
-          <InvoiceTable invoices={visible} onSelect={setSelectedId} />
+          <>
+            <InvoiceTable invoices={rows} onSelect={setSelectedId} />
+            <Pagination controls={pagination} label="invoices" flush />
+          </>
         ) : (
           <EmptyState text="No invoices match your search or filter." />
         )}

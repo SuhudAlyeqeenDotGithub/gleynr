@@ -1,5 +1,7 @@
 import { CreditCard, Plus, Star } from "lucide-react";
 import type { PaymentMethod } from "@/lib/billing-info/types";
+import Pagination from "@/components/dashboard/shared/pagination";
+import { useLocalPage } from "@/lib/pagination/use-local-page";
 import {
   expiresSoon,
   formatExpiry,
@@ -23,7 +25,9 @@ const PaymentMethodsSection = ({
   onEdit,
   onSetDefault,
   onRemove,
-}: PaymentMethodsSectionProps) => (
+}: PaymentMethodsSectionProps) => {
+  const { rows, pagination } = useLocalPage(methods, "methods");
+  return (
   <BillingSection
     id="bi-methods-title"
     icon={CreditCard}
@@ -55,7 +59,7 @@ const PaymentMethodsSection = ({
             </tr>
           </thead>
           <tbody>
-            {methods.map((method) => {
+            {rows.map((method) => {
               const expired = isCardExpired(method);
               const soon = expiresSoon(method);
               const blocked = method.isDefault && methods.length > 1;
@@ -128,6 +132,7 @@ const PaymentMethodsSection = ({
         </table>
       </div>
     )}
+    <Pagination controls={pagination} label="payment methods" flush />
     <div className="bi-section-foot">
       <BillingNote>
         The default payment method cannot be removed while other methods are on
@@ -135,6 +140,7 @@ const PaymentMethodsSection = ({
       </BillingNote>
     </div>
   </BillingSection>
-);
+  );
+};
 
 export default PaymentMethodsSection;
