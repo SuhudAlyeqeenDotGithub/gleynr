@@ -10,7 +10,11 @@ type PaginationProps = {
   flush?: boolean;
 };
 
-const Pagination = ({ controls, label = "records", flush }: PaginationProps) => {
+const Pagination = ({
+  controls,
+  label = "records",
+  flush,
+}: PaginationProps) => {
   const { page, pageSize, total, totalPages, from, to, hasPrev, hasNext } =
     controls;
   if (total === 0) return null;
@@ -39,7 +43,9 @@ const Pagination = ({ controls, label = "records", flush }: PaginationProps) => 
           <select
             className="filter-select"
             value={pageSize}
-            onChange={(event) => controls.setPageSize(Number(event.target.value))}
+            onChange={(event) =>
+              controls.setPageSize(Number(event.target.value))
+            }
           >
             {PAGE_SIZE_OPTIONS.map((size) => (
               <option key={size} value={size}>

@@ -59,7 +59,10 @@ export const useCursorPagination = <T>(
     page,
     pageSize,
     total,
-    totalPages: total === undefined ? undefined : Math.max(1, Math.ceil(total / pageSize)),
+    totalPages:
+      total === undefined
+        ? undefined
+        : Math.max(1, Math.ceil(total / pageSize)),
     from: items.length ? (page - 1) * pageSize + 1 : 0,
     to: (page - 1) * pageSize + items.length,
     hasPrev: page > 1,
@@ -68,7 +71,8 @@ export const useCursorPagination = <T>(
     setPage: go,
     next: () => go(page + 1),
     prev: () => go(page - 1),
-    setPageSize: (size) => setTarget({ key: resetKey, page: 1, pageSize: size }),
+    setPageSize: (size) =>
+      setTarget({ key: resetKey, page: 1, pageSize: size }),
   };
 
   return { rows: items, pagination };
