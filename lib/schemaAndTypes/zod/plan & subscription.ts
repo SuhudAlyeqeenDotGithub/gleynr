@@ -30,6 +30,7 @@ export const planSchema = z.object({
   ),
   entitlements: z.array(z.string()),
 });
+export type Plan = z.infer<typeof planSchema>;
 
 // subscription schema and type
 export const subscriptionSchema = z.object({

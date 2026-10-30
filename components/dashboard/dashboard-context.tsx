@@ -9,10 +9,13 @@ import type { SitesStore } from "@/lib/sites/use-sites-store";
 import { useSitesStore } from "@/lib/sites/use-sites-store";
 import { useUsersStore } from "@/lib/users/use-users-store";
 import type { UsersStore } from "@/lib/users/use-users-store";
+import { useSubscriptionStore } from "@/lib/plans/use-subscription-store";
+import type { SubscriptionStore } from "@/lib/plans/use-subscription-store";
 
 export type DashboardContextValue = {
   store: SitesStore;
   usersStore: UsersStore;
+  subscriptionStore: SubscriptionStore;
   notify: (text: string) => void;
   navigate: (page: string) => void;
 };
@@ -25,6 +28,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const store = useSitesStore();
   const usersStore = useUsersStore();
+  const subscriptionStore = useSubscriptionStore();
   const [toast, setToast] = useState("");
 
   const notify = (text: string) => {
@@ -38,7 +42,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DashboardContext.Provider value={{ store, usersStore, notify, navigate }}>
+    <DashboardContext.Provider
+      value={{ store, usersStore, subscriptionStore, notify, navigate }}
+    >
       {children}
       {toast && (
         <div className="toast">

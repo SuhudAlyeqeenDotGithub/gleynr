@@ -6,6 +6,7 @@ import FormModal from "@/components/dashboard/dialogs/form-modal";
 import GenericPage from "@/components/dashboard/pages/generic-page";
 import OverviewPage from "@/components/dashboard/overview/overview-page";
 import UsersPage from "@/components/dashboard/users/users-page";
+import PlansPage from "@/components/dashboard/billing/plans/plans-page";
 import type { ModalType } from "@/lib/dashboard/types";
 import { toDashboardSites } from "@/lib/sites/selectors";
 import { useDashboardContext } from "./dashboard-context";
@@ -24,13 +25,18 @@ export const OverviewRoute = () => {
 };
 
 export const SectionRoute = ({ label }: { label: string }) => {
-  const { store, usersStore, notify } = useDashboardContext();
+  const { store, usersStore, subscriptionStore, notify } =
+    useDashboardContext();
   const [modal, setModal] = useState<ModalType>(null);
 
   if (label === "Users & permissions") {
     return (
       <UsersPage sites={store.sites} userStore={usersStore} notify={notify} />
     );
+  }
+
+  if (label === "Plans & subscription") {
+    return <PlansPage subscriptionStore={subscriptionStore} notify={notify} />;
   }
 
   return (
