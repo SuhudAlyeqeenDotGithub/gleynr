@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import FormModal from "@/components/dashboard/dialogs/form-modal";
 import GenericPage from "@/components/dashboard/pages/generic-page";
@@ -9,6 +9,7 @@ import UsersPage from "@/components/dashboard/users/users-page";
 import PlansPage from "@/components/dashboard/billing/plans/plans-page";
 import UsageBillsPage from "@/components/dashboard/billing/usage-bills/usage-bills-page";
 import InvoicesPage from "@/components/dashboard/billing/invoices/invoices-page";
+import BillingInfoPage from "@/components/dashboard/billing/billing-info/billing-info-page";
 import type { ModalType } from "@/lib/dashboard/types";
 import { toDashboardSites } from "@/lib/sites/selectors";
 import { useDashboardContext } from "./dashboard-context";
@@ -27,7 +28,7 @@ export const OverviewRoute = () => {
 };
 
 export const SectionRoute = ({ label }: { label: string }) => {
-  const { store, usersStore, subscriptionStore, notify } =
+  const { store, usersStore, subscriptionStore, billingInfoStore, notify } =
     useDashboardContext();
   const [modal, setModal] = useState<ModalType>(null);
 
@@ -38,12 +39,25 @@ export const SectionRoute = ({ label }: { label: string }) => {
   }
 
   if (label === "Plans & subscription") {
-    return <PlansPage subscriptionStore={subscriptionStore} notify={notify} />;
+    return (
+      <Suspense fallback={null}>
+        <PlansPage subscriptionStore={subscriptionStore} notify={notify} />
+      </Suspense>
+    );
   }
 
-  if (label === "Usage & bills") return <UsageBillsPage />;
+  if (label === "Usage & bills") {
+    return (
+      <Suspense fallback={null}>
+        <UsageBillsPage />
+      </Suspense>
+    );
+  }
 
   if (label === "Invoices") return <InvoicesPage notify={notify} />;
+
+  if (label === "Billing information")
+    return <BillingInfoPage store={billingInfoStore} notify={notify} />;
 
   return (
     <>

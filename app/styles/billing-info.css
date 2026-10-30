@@ -1,0 +1,139 @@
+/* Billing information */
+.bi-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.bi-group {
+  padding: 0 28px;
+}
+.bi-group:first-child {
+  padding-left: 0;
+}
+.bi-group:last-child {
+  padding-right: 0;
+}
+.bi-group + .bi-group {
+  border-left: 1px solid var(--border);
+}
+.bi-group h3 {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.bi-group dl {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+}
+.bi-group dt {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.bi-group dd {
+  margin: 3px 0 0;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.bi-group dd.empty {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.bi-table tbody tr {
+  cursor: default;
+}
+.bi-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+.bi-remove:hover:not(:disabled) {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+.bl-link:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.bi-muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+.bi-expired {
+  color: var(--danger);
+}
+.bi-soon {
+  color: var(--warning);
+}
+.bi-empty {
+  margin: 0;
+  padding: 28px 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.bi-section-foot {
+  padding: 0 24px 20px;
+}
+.bi-section-foot .bl-note {
+  margin-top: 4px;
+}
+
+/* Forms */
+.bi-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+.bi-span {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+}
+.form-stack .bi-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+}
+.form-stack .bi-check input {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  accent-color: var(--primary);
+}
+.form-stack .bl-note {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .bi-groups {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .bi-group,
+  .bi-group:first-child,
+  .bi-group:last-child {
+    padding: 0;
+  }
+  .bi-group + .bi-group {
+    border-left: 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+}
+@media (max-width: 560px) {
+  .bi-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .bi-section-foot {
+    padding: 0 16px 16px;
+  }
+}

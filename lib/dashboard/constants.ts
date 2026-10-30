@@ -48,7 +48,7 @@ export const BILLING_NAVIGATION: NavigationItem[] = [
     href: "/main/usage-entitlements",
   },
   {
-    label: "Payment methods",
+    label: "Billing information",
     icon: CreditCard,
     href: "/main/payment-methods",
   },
@@ -143,10 +143,10 @@ export const GENERIC_PAGE_CONFIG: Record<string, PageDefinition> = {
     description: "Monitor usage, estimated costs and previous bills.",
     action: "View bills",
   },
-  "Payment methods": {
+  "Billing information": {
     icon: CreditCard,
-    title: "Payment methods",
-    description: "Manage cards and payment methods for your workspace.",
+    title: "Billing information",
+    description: "Manage billing details and payment methods.",
     action: "Add method",
   },
   Invoices: {

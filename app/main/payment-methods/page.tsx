@@ -1,5 +1,5 @@
 import { SectionRoute } from "@/components/dashboard/route-pages";
 
-const Page = () => <SectionRoute label="Payment methods" />;
+const Page = () => <SectionRoute label="Billing information" />;
 
 export default Page;
