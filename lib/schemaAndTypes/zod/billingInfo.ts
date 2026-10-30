@@ -1,9 +1,16 @@
+
 import {z} from "zod"
 
 
+
 export const billingInfoSchema = z.object({
-    billingEmail: z.email(),
-    billingAddress: z.string().optional(),
+    id: z.string(),
+    organisationId: z.string(),
+    status: z.enum(["Active", "Inactive", "Suspended"]),
+    email: z.email(),
+    address: z.string(),
+    city: z.string(),
+    postalCode: z.string(),
     paymentSetupStatus: z.enum(["Pending", "Completed", "Failed"]).optional(),
     paymentProvider: z.object({
         provider: z.enum(["Stripe"]),
@@ -11,6 +18,6 @@ export const billingInfoSchema = z.object({
         providerPaymentMethodId: z.string(),
     }).optional(),
 
-}).optional()
+})
 
 export type BillingInfo = z.infer<typeof billingInfoSchema>

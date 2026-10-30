@@ -32,6 +32,7 @@ export type Tab = z.infer<typeof tabSchema>;
 // user schema and type
 export const userSchema = z.object({
   id: z.string(),
+  organisationId: z.string(),
   email: z.email(),
   uid: z.string().optional(),
   username: z.string().optional(),

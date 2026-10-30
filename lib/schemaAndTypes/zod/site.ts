@@ -4,6 +4,7 @@ import { floorSchema } from "./floor";
 // site schema and type
 export const siteSchema = z.object({
   id: z.string(),
+  organisationId: z.string(),
   name: z.string(),
   floors: z.array(floorSchema),
 });
