@@ -27,3 +27,83 @@ export const billRatesSchema = z.object({
   ),
 });
 export type BillRates = z.infer<typeof billRatesSchema>;
+
+const organisationUsage = {
+  // Organisation & billing period
+  organisationId: "",
+  periodStart: "",
+  periodEnd: "",
+  recordedAt: "",
+
+  // Firestore — document operations
+  firestore: {
+    read: 0,
+    queries: 0,
+    aggregation: 0,
+        
+
+    writes: 0,
+ 
+
+    // Logical document storage
+    storageBytes: 0,
+   
+
+    // Firestore data transfer estimates
+    requestBytes: 0,
+    responseBytes: 0,
+
+    // Optional diagnostics
+    transactions: 0,
+    batchWrites: 0,
+   
+  
+  },
+
+  // Python backend — Cloud Run
+  backend: {
+    requestCount: 0,
+    successfulRequestCount: 0,
+    failedRequestCount: 0,
+    requestDurationMs: 0,
+    estimatedCpuTimeMs: 0,
+    requestBytes: 0,
+    responseBytes: 0,
+    responseStatusCounts: {},
+  },
+
+  // Next.js frontend — server-rendered traffic
+  frontend: {
+    serverRequestCount: 0,
+    serverResponseBytes: 0,
+    serverRequestDurationMs: 0,
+  },
+
+  // Backups attributable to this organisation
+  backups: {
+    backupCount: 0,
+    backupStorageBytes: 0,
+    backupBytesCreated: 0,
+    backupBytesDeleted: 0,
+    restoreCount: 0,
+    restoreBytes: 0,
+    failedBackupCount: 0,
+  },
+
+  // Shared infrastructure allocation
+  sharedCosts: {
+    allocatedCloudRunCost: 0,
+    allocatedFrontendHostingCost: 0,
+    allocatedCdnCost: 0,
+    allocatedFirestoreOverheadCost: 0,
+    allocatedPitrCost: 0,
+    allocationMethod: "",
+  },
+
+  // Metering quality
+  measurement: {
+    method: "", // direct, estimated, or provider-reconciled
+    accuracy: "",
+    source: "",
+  },
+};
