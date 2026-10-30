@@ -1,9 +1,8 @@
-import type { SubscriptionRecord } from "@/lib/plans/types";
+import StatusBadge from "../shared/status-badge";
+import { SUBSCRIPTION_STATUS } from "../shared/status-presets";
 
-const SubscriptionStatus = ({
-  status,
-}: {
-  status: SubscriptionRecord["status"];
-}) => <span className={`plans-status ${status.toLowerCase()}`}>{status}</span>;
+const SubscriptionStatus = ({ status }: { status: string }) => (
+  <StatusBadge label={status} preset={SUBSCRIPTION_STATUS[status]} />
+);
 
 export default SubscriptionStatus;

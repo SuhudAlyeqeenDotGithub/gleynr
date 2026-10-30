@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Gauge } from "lucide-react";
+import { Gauge, Receipt } from "lucide-react";
 import { createMockBillingPeriods } from "@/lib/usage-bills/mock/periods";
 import { buildBreakdown, getPeriodTotal } from "@/lib/usage-bills/calculations";
+import BillingHeader from "../shared/billing-header";
+import BillingSection from "../shared/billing-section";
 import BillingHistoryTable from "./billing-history-table";
 import CurrentPeriodSummary from "./current-period-summary";
 import CurrentUsage from "./current-usage";
@@ -20,22 +22,13 @@ const UsageBillsPage = () => {
   );
   const selected = periods.find((period) => period.id === selectedId);
 
-  const select = (id: string) => setSelectedId(id);
-
   return (
-    <div className="page-content ub-page">
-      <div className="page-intro">
-        <div>
-          <div className="eyebrow">
-            <Gauge size={14} /> Billing
-          </div>
-          <h1>Usage &amp; bills</h1>
-          <p>
-            Monitor current usage, understand estimated costs and review
-            previous bills.
-          </p>
-        </div>
-      </div>
+    <div className="page-content bl-page">
+      <BillingHeader
+        icon={Gauge}
+        title="Usage & bills"
+        description="Monitor current usage, understand estimated costs and review previous bills."
+      />
 
       {current && currentBreakdown && (
         <>
@@ -48,22 +41,19 @@ const UsageBillsPage = () => {
         </>
       )}
 
-      <section className="panel ub-section" aria-labelledby="ub-history-title">
-        <header className="ub-section-head">
-          <div>
-            <h2 id="ub-history-title">Previous billing periods</h2>
-            <p>
-              Finalised bills do not change. Select a period to see its usage
-              breakdown.
-            </p>
-          </div>
-        </header>
+      <BillingSection
+        id="ub-history-title"
+        icon={Receipt}
+        title="Previous billing periods"
+        description="Finalised bills do not change. Select a period to see its usage breakdown."
+        flush
+      >
         <BillingHistoryTable
           periods={periods}
           selectedId={selectedId}
-          onSelect={select}
+          onSelect={setSelectedId}
         />
-      </section>
+      </BillingSection>
 
       {selected && (
         <PeriodDetail

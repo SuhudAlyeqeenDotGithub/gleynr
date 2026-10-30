@@ -145,7 +145,12 @@ const PERIOD_SPECS: {
   factor: number;
 }[] = [
   { month: 9, status: "In Progress", plan: "Gleynr Essential", factor: 0.62 },
-  { month: 8, status: "Awaiting Calculation", plan: "Gleynr Essential", factor: 1 },
+  {
+    month: 8,
+    status: "Awaiting Calculation",
+    plan: "Gleynr Essential",
+    factor: 1,
+  },
   { month: 7, status: "Calculated", plan: "Gleynr Essential", factor: 0.94 },
   { month: 6, status: "Charged", plan: "Gleynr Essential", factor: 0.88 },
   { month: 5, status: "Charged", plan: "Gleynr Essential", factor: 0.81 },

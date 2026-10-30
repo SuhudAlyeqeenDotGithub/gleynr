@@ -52,7 +52,7 @@ export const BILLING_NAVIGATION: NavigationItem[] = [
     icon: CreditCard,
     href: "/main/payment-methods",
   },
-  { label: "Billing history", icon: Database, href: "/main/billing-history" },
+  { label: "Invoices", icon: Database, href: "/main/billing-history" },
 ];
 
 export const ALL_NAVIGATION = [
@@ -149,10 +149,10 @@ export const GENERIC_PAGE_CONFIG: Record<string, PageDefinition> = {
     description: "Manage cards and payment methods for your workspace.",
     action: "Add method",
   },
-  "Billing history": {
+  Invoices: {
     icon: Database,
-    title: "Billing history & invoices",
-    description: "Download invoices and review past charges.",
+    title: "Invoices",
+    description: "Review invoices and payment history.",
     action: "Export history",
   },
 };

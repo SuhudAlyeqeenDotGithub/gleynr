@@ -1,6 +1,8 @@
-import { Eye } from "lucide-react";
+import { ChevronRight, History } from "lucide-react";
 import { formatDate } from "@/lib/plans/selectors";
 import type { SubscriptionRecord } from "@/lib/plans/types";
+import BillingSection from "../shared/billing-section";
+import { getPlanIcon } from "./plan-icons";
 import SubscriptionStatus from "./subscription-status";
 
 export const subscriptionPeriod = (subscription: SubscriptionRecord) => {
@@ -23,18 +25,15 @@ const SubscriptionHistory = ({
   subscriptions,
   onInspect,
 }: SubscriptionHistoryProps) => (
-  <section
-    className="panel plans-section"
-    aria-labelledby="plans-history-title"
+  <BillingSection
+    id="plans-history-title"
+    icon={History}
+    title="Subscription history"
+    description="Previous and current subscriptions are always retained."
+    flush
   >
-    <div className="panel-head">
-      <div>
-        <h2 id="plans-history-title">Subscription history</h2>
-        <p>Previous and current subscriptions are always retained.</p>
-      </div>
-    </div>
-    <div className="plans-history-wrap">
-      <table className="plans-history">
+    <div className="bl-table-wrap">
+      <table className="bl-table">
         <thead>
           <tr>
             <th scope="col">Plan</th>
@@ -46,31 +45,50 @@ const SubscriptionHistory = ({
           </tr>
         </thead>
         <tbody>
-          {subscriptions.map((subscription) => (
-            <tr key={subscription.id}>
-              <td>
-                <strong>{subscription.plan}</strong>
-                <small>{subscription.type}</small>
-              </td>
-              <td>{subscriptionPeriod(subscription)}</td>
-              <td>
-                <SubscriptionStatus status={subscription.status} />
-              </td>
-              <td>
-                <button
-                  className="plans-link"
-                  onClick={() => onInspect(subscription)}
-                  aria-label={`View details for ${subscription.plan} subscription`}
-                >
-                  <Eye size={14} /> Details
-                </button>
-              </td>
-            </tr>
-          ))}
+          {subscriptions.map((subscription) => {
+            const Icon = getPlanIcon(subscription.plan);
+            return (
+              <tr
+                key={subscription.id}
+                className={
+                  subscription.status === "Active" ? "is-current" : undefined
+                }
+                onClick={() => onInspect(subscription)}
+              >
+                <th scope="row">
+                  <div className="bl-cell-id">
+                    <span className="bl-mini-icon">
+                      <Icon size={15} />
+                    </span>
+                    <div>
+                      <strong>{subscription.plan}</strong>
+                      <small>{subscription.type}</small>
+                    </div>
+                  </div>
+                </th>
+                <td>{subscriptionPeriod(subscription)}</td>
+                <td>
+                  <SubscriptionStatus status={subscription.status} />
+                </td>
+                <td className="bl-cell-end">
+                  <button
+                    className="bl-link"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onInspect(subscription);
+                    }}
+                    aria-label={`View details for ${subscription.plan} subscription`}
+                  >
+                    Details <ChevronRight size={14} />
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
-  </section>
+  </BillingSection>
 );
 
 export default SubscriptionHistory;

@@ -71,7 +71,9 @@ export const buildBreakdown = (period: BillingPeriod): PeriodBreakdown => {
             basis === "estimate"
               ? reading.estimateRate
               : metric.finalRate(period.rates);
-          cost = round2(toRateBasis(metric, reading.unit, reading.value) * rate);
+          cost = round2(
+            toRateBasis(metric, reading.unit, reading.value) * rate,
+          );
         }
         return {
           key: metric.key,

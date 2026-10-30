@@ -1,9 +1,8 @@
-import type { BillingStatus } from "@/lib/usage-bills/types";
+import StatusBadge from "../shared/status-badge";
+import { BILLING_STATUS } from "../shared/status-presets";
 
-const slug = (status: BillingStatus) => status.toLowerCase().replaceAll(" ", "-");
-
-const BillingStatusLabel = ({ status }: { status: BillingStatus }) => (
-  <span className={`ub-status ${slug(status)}`}>{status}</span>
+const BillingStatusLabel = ({ status }: { status: string }) => (
+  <StatusBadge label={status} preset={BILLING_STATUS[status]} />
 );
 
 export default BillingStatusLabel;

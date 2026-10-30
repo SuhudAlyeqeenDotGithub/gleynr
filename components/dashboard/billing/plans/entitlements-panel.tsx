@@ -1,54 +1,62 @@
-import { Check, Info, Minus } from "lucide-react";
+import { Check, ListChecks, Minus } from "lucide-react";
 import { ENTITLEMENT_GROUPS } from "@/lib/plans/catalog";
 import {
   formatEntitlementValue,
   getEntitlementValue,
 } from "@/lib/plans/selectors";
 import type { PlanDefinition } from "@/lib/plans/types";
+import BillingNote from "../shared/billing-note";
+import BillingSection from "../shared/billing-section";
 
 const EntitlementsPanel = ({ plan }: { plan: PlanDefinition }) => (
-  <section className="panel plans-section" aria-labelledby="plans-entitlements-title">
-    <div className="panel-head">
-      <div>
-        <h2 id="plans-entitlements-title">Plan entitlements</h2>
-        <p>What {plan.name} entitles your organisation to.</p>
-      </div>
-    </div>
-    <div className="plans-entitlement-grid">
+  <BillingSection
+    id="plans-entitlements-title"
+    icon={ListChecks}
+    title="Plan entitlements"
+    description={`What ${plan.name} includes.`}
+  >
+    <div className="ent-list">
       {ENTITLEMENT_GROUPS.map(({ id, label, icon: Icon, items }) => (
-        <div key={id} className="plans-entitlement-group">
+        <div key={id} className="ent-row">
           <h3>
-            <Icon size={15} /> {label}
+            <Icon size={15} aria-hidden />
+            {label}
           </h3>
-          <ul>
+          <dl>
             {items.map((item) => {
               const value = getEntitlementValue(plan, item);
-              const unit = item.unit ? ` ${item.unit}` : "";
+              const included = value.state === "included";
+              const excluded = value.state === "excluded";
               return (
-                <li key={item.key}>
-                  <div className="plans-entitlement-row">
-                    <span>{item.label}</span>
-                    <strong>
-                      {value.state === "included" && <Check size={14} />}
-                      {value.state === "excluded" && <Minus size={14} />}
-                      {formatEntitlementValue(value)}
-                      {value.state === "limit" && value.limit !== "unlimited"
-                        ? unit
-                        : ""}
-                    </strong>
-                  </div>
-                </li>
+                <div key={item.key} className={excluded ? "off" : undefined}>
+                  <dt>{item.label}</dt>
+                  <dd>
+                    {item.kind === "allowance" ? (
+                      <>
+                        <strong>{formatEntitlementValue(value)}</strong>
+                        {value.state === "limit" &&
+                          value.limit !== "unlimited" &&
+                          item.unit && <span>{item.unit}</span>}
+                      </>
+                    ) : (
+                      <span className={`ent-flag ${included ? "on" : "off"}`}>
+                        {included ? <Check size={14} /> : <Minus size={14} />}
+                        {included ? "Included" : "Not included"}
+                      </span>
+                    )}
+                  </dd>
+                </div>
               );
             })}
-          </ul>
+          </dl>
         </div>
       ))}
     </div>
-    <p className="plans-footnote">
-      <Info size={13} /> Allowances are shown as plan limits. Track consumption
-      in Usage &amp; bills. Demo data is illustrative.
-    </p>
-  </section>
+    <BillingNote>
+      Allowances are shown as plan limits. Track consumption in Usage &amp;
+      bills. Demo data is illustrative.
+    </BillingNote>
+  </BillingSection>
 );
 
 export default EntitlementsPanel;

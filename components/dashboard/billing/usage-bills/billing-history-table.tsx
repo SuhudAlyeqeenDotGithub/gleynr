@@ -1,3 +1,4 @@
+import { CalendarDays, ChevronRight } from "lucide-react";
 import {
   buildBreakdown,
   formatMoney,
@@ -18,8 +19,8 @@ const BillingHistoryTable = ({
   selectedId,
   onSelect,
 }: BillingHistoryTableProps) => (
-  <div className="ub-history-wrap">
-    <table className="ub-history">
+  <div className="bl-table-wrap">
+    <table className="bl-table">
       <thead>
         <tr>
           <th scope="col">Billing period</th>
@@ -33,6 +34,9 @@ const BillingHistoryTable = ({
             Total bill
           </th>
           <th scope="col">Status</th>
+          <th scope="col">
+            <span className="sr-only">Open</span>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -44,38 +48,50 @@ const BillingHistoryTable = ({
           return (
             <tr
               key={period.id}
-              className={selected ? "selected" : undefined}
+              className={`${selected ? "selected" : ""} ${estimate ? "is-current" : ""}`}
               onClick={() => onSelect(period.id)}
             >
               <th scope="row">
-                <button
-                  className="ub-row-button"
-                  aria-pressed={selected}
-                  aria-label={`View usage breakdown for ${period.label}`}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onSelect(period.id);
-                  }}
-                >
-                  {period.label}
-                </button>
-                <small>{formatPeriodRange(period)}</small>
+                <div className="bl-cell-id">
+                  <span className="bl-mini-icon">
+                    <CalendarDays size={15} />
+                  </span>
+                  <div>
+                    <button
+                      className="bl-row-button"
+                      aria-pressed={selected}
+                      aria-label={`View usage breakdown for ${period.label}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onSelect(period.id);
+                      }}
+                    >
+                      {period.label}
+                    </button>
+                    <small>{formatPeriodRange(period)}</small>
+                  </div>
+                </div>
               </th>
               <td className="num">
                 {formatMoney(period.baseSubscriptionPrice, period.currency)}
               </td>
-              <td className={`num ${estimate ? "estimate" : ""}`}>
+              <td className={`num ${estimate ? "est" : ""}`}>
                 {breakdown.usageTotal === null
                   ? "Pending"
                   : formatMoney(breakdown.usageTotal, period.currency)}
                 {estimate && <small>Estimate</small>}
               </td>
-              <td className={`num total ${estimate ? "estimate" : ""}`}>
-                {total === null ? "Pending" : formatMoney(total, period.currency)}
+              <td className={`num strong ${estimate ? "est" : ""}`}>
+                {total === null
+                  ? "Pending"
+                  : formatMoney(total, period.currency)}
                 {estimate && <small>Estimate</small>}
               </td>
               <td>
                 <BillingStatusLabel status={period.status} />
+              </td>
+              <td className="bl-cell-end">
+                <ChevronRight size={16} className="bl-row-chev" />
               </td>
             </tr>
           );

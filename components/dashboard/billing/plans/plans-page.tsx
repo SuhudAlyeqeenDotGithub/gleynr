@@ -5,6 +5,7 @@ import { Package } from "lucide-react";
 import { getPlan } from "@/lib/plans/selectors";
 import type { SubscriptionRecord } from "@/lib/plans/types";
 import type { SubscriptionStore } from "@/lib/plans/use-subscription-store";
+import BillingHeader from "../shared/billing-header";
 import AvailablePlans from "./available-plans";
 import CancelSubscriptionDialog from "./cancel-subscription-dialog";
 import ChangePlanDialog from "./change-plan-dialog";
@@ -28,16 +29,12 @@ const PlansPage = ({ subscriptionStore, notify }: PlansPageProps) => {
   const plan = current && getPlan(current.plan);
 
   return (
-    <div className="page-content plans-page">
-      <div className="page-intro">
-        <div>
-          <div className="eyebrow">
-            <Package size={14} /> Billing
-          </div>
-          <h1>Plans &amp; subscription</h1>
-          <p>Manage your plan, entitlements and subscription history.</p>
-        </div>
-      </div>
+    <div className="page-content bl-page">
+      <BillingHeader
+        icon={Package}
+        title="Plans & subscription"
+        description="Manage your plan, entitlements and subscription history."
+      />
 
       {current && plan ? (
         <>
@@ -58,11 +55,13 @@ const PlansPage = ({ subscriptionStore, notify }: PlansPageProps) => {
           <AvailablePlans currentPlan={current.plan} onSelect={setTargetPlan} />
         </>
       ) : (
-        <section className="panel plans-section">
-          <p className="dialog-copy">
-            There is no active subscription. Previous subscriptions are listed
-            below.
-          </p>
+        <section className="bl-section">
+          <div className="bl-section-body">
+            <p className="dialog-copy">
+              There is no active subscription. Previous subscriptions are listed
+              below.
+            </p>
+          </div>
         </section>
       )}
 

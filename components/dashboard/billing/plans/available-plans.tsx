@@ -2,18 +2,23 @@ import { useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Check,
   ChevronDown,
   ChevronUp,
-  Info,
+  Layers,
+  Plus,
 } from "lucide-react";
 import { ENTITLEMENT_ITEMS } from "@/lib/plans/catalog";
 import { MOCK_PLANS } from "@/lib/plans/mock/plans";
 import {
   formatEntitlementValue,
+  formatPrice,
   getChangeKind,
   getEntitlementValue,
 } from "@/lib/plans/selectors";
-import BasePrice from "./base-price";
+import BillingNote from "../shared/billing-note";
+import BillingSection from "../shared/billing-section";
+import { getPlanIcon } from "./plan-icons";
 import PlanComparison from "./plan-comparison";
 
 type AvailablePlansProps = {
@@ -35,15 +40,12 @@ const AvailablePlans = ({ currentPlan, onSelect }: AvailablePlansProps) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section
-      className="panel plans-section"
-      aria-labelledby="plans-available-title"
-    >
-      <div className="panel-head">
-        <div>
-          <h2 id="plans-available-title">Available plans</h2>
-          <p>Compare plans and change at any time.</p>
-        </div>
+    <BillingSection
+      id="plans-available-title"
+      icon={Layers}
+      title="Available plans"
+      description="Compare plans and change at any time."
+      action={
         <button
           className="button secondary"
           onClick={() => setExpanded((open) => !open)}
@@ -52,41 +54,57 @@ const AvailablePlans = ({ currentPlan, onSelect }: AvailablePlansProps) => {
           {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           {expanded ? "Hide full comparison" : "Compare all features"}
         </button>
-      </div>
-      <div className="plans-cards">
+      }
+    >
+      <div className="plan-cards">
         {MOCK_PLANS.map((plan) => {
           const isCurrent = plan.name === currentPlan;
           const kind = getChangeKind(currentPlan, plan.name);
+          const Icon = getPlanIcon(plan.name);
           return (
             <article
               key={plan.id}
-              className={`plans-card ${isCurrent ? "current" : ""}`}
+              className={`plan-card ${isCurrent ? "current" : ""}`}
               aria-current={isCurrent ? "true" : undefined}
             >
-              <div className="plans-card-head">
+              {isCurrent && (
+                <span className="plan-card-flag">
+                  <Check size={11} /> Your plan
+                </span>
+              )}
+              <header>
+                <span className="plan-card-icon">
+                  <Icon size={18} />
+                </span>
                 <h3>{plan.name}</h3>
-                {isCurrent && <span className="plans-badge">Current plan</span>}
+              </header>
+              <p className="plan-card-summary">{plan.summary}</p>
+
+              <div className="plan-card-price">
+                <span className="plan-card-label">Base price</span>
+                <div>
+                  <strong>
+                    {formatPrice(plan.monthlyPrice, plan.currency)}
+                  </strong>
+                  {plan.monthlyPrice ? <span>/ month</span> : null}
+                </div>
+                <span className="plan-card-usage">
+                  <Plus size={11} /> usage charges
+                </span>
               </div>
-              <p>{plan.summary}</p>
-              <div className="plans-price">
-                <span className="plans-price-label">Base price</span>
-                <BasePrice price={plan.monthlyPrice} currency={plan.currency} />
-              </div>
-              <ul>
+
+              <ul className="plan-card-limits">
                 {KEY_ITEMS.map((item) => {
                   const value = getEntitlementValue(plan, item);
                   return (
                     <li key={item.key}>
                       <span>{item.label}</span>
-                      <strong
-                        className={value.state === "tbc" ? "tbc" : undefined}
-                      >
-                        {formatEntitlementValue(value)}
-                      </strong>
+                      <strong>{formatEntitlementValue(value)}</strong>
                     </li>
                   );
                 })}
               </ul>
+
               {isCurrent ? (
                 <button className="button secondary" disabled>
                   Current plan
@@ -108,12 +126,12 @@ const AvailablePlans = ({ currentPlan, onSelect }: AvailablePlansProps) => {
           );
         })}
       </div>
-      <p className="plans-footnote">
-        <Info size={13} /> Prices shown are base subscription prices, not total
-        monthly costs. Usage charges apply on top and are billed monthly.
-      </p>
+      <BillingNote>
+        Prices shown are base subscription prices, not total monthly costs.
+        Usage charges apply on top and are billed monthly.
+      </BillingNote>
       {expanded && <PlanComparison currentPlan={currentPlan} />}
-    </section>
+    </BillingSection>
   );
 };
 

@@ -1,9 +1,8 @@
-import {
-  formatMoney,
-  getPeriodTotal,
-} from "@/lib/usage-bills/calculations";
+import { CalendarDays, CalendarRange, Layers } from "lucide-react";
 import ModalShell from "@/components/dashboard/dialogs/modal-shell";
+import { formatMoney, getPeriodTotal } from "@/lib/usage-bills/calculations";
 import type { BillingPeriod, PeriodBreakdown } from "@/lib/usage-bills/types";
+import Receipt from "../shared/receipt";
 import BillingStatusLabel from "./billing-status";
 import UsageBreakdown from "./usage-breakdown";
 
@@ -38,49 +37,69 @@ const PeriodDetail = ({ period, breakdown, onClose }: PeriodDetailProps) => {
 
   return (
     <ModalShell title={`${period.label} bill`} onClose={onClose} wide>
-      <div className="ub-detail">
-        <div className="ub-detail-head">
-          <BillingStatusLabel status={period.status} />
-          <p>{STATUS_NOTE[period.status]}</p>
-        </div>
-        <dl className="ub-detail-dates">
+      <div className="bl-dialog">
+        <div className="bl-dialog-hero">
           <div>
-            <dt>Period start</dt>
-            <dd>{formatDate(period.startDate)}</dd>
+            <BillingStatusLabel status={period.status} />
+            <p>{STATUS_NOTE[period.status]}</p>
           </div>
-          <div>
-            <dt>Period end</dt>
-            <dd>{formatDate(period.endDate)}</dd>
-          </div>
-          <div>
-            <dt>Plan</dt>
-            <dd>{period.planName}</dd>
-          </div>
-        </dl>
-        <dl className="ub-detail-summary">
-          <div>
-            <dt>Base subscription</dt>
-            <dd>{money(period.baseSubscriptionPrice)}</dd>
-          </div>
-          <div>
-            <dt>{estimate ? "Estimated usage" : "Usage charges"}</dt>
-            <dd className={estimate ? "estimate" : undefined}>
-              {money(breakdown.usageTotal)}
-            </dd>
-          </div>
-          <div>
-            <dt>{estimate ? "Estimated total" : "Total bill"}</dt>
-            <dd className={`total ${estimate ? "estimate" : ""}`}>
+          <div className="bl-dialog-figure">
+            <span>{estimate ? "Estimated total" : "Total bill"}</span>
+            <strong className={estimate ? "muted" : undefined}>
               {money(total)}
-            </dd>
+            </strong>
           </div>
-        </dl>
-        <UsageBreakdown
-          breakdown={breakdown}
-          currency={period.currency}
-          idPrefix={`ub-detail-${period.id}`}
-          defaultExpanded
-        />
+        </div>
+
+        <ul className="bl-facts">
+          <li>
+            <CalendarDays size={14} /> <span>Period start</span>
+            <strong>{formatDate(period.startDate)}</strong>
+          </li>
+          <li>
+            <CalendarRange size={14} /> <span>Period end</span>
+            <strong>{formatDate(period.endDate)}</strong>
+          </li>
+          <li>
+            <Layers size={14} /> <span>Plan</span>
+            <strong>{period.planName}</strong>
+          </li>
+        </ul>
+
+        <section>
+          <h3 className="bl-dialog-heading">Charges</h3>
+          <Receipt
+            lines={[
+              {
+                label: "Base subscription",
+                hint: "Fixed monthly",
+                amount: money(period.baseSubscriptionPrice),
+              },
+              {
+                label: estimate ? "Estimated usage" : "Usage charges",
+                hint: estimate ? "Accumulated so far" : "Final usage charges",
+                tag: estimate ? "Estimate" : undefined,
+                amount: money(breakdown.usageTotal),
+                muted: estimate,
+              },
+            ]}
+            total={{
+              label: estimate ? "Estimated total" : "Total bill",
+              amount: money(total),
+              muted: estimate,
+            }}
+          />
+        </section>
+
+        <section>
+          <h3 className="bl-dialog-heading">Usage breakdown</h3>
+          <UsageBreakdown
+            breakdown={breakdown}
+            currency={period.currency}
+            idPrefix={`ub-detail-${period.id}`}
+            defaultExpanded
+          />
+        </section>
       </div>
       <div className="modal-actions">
         <button className="button secondary" onClick={onClose}>
