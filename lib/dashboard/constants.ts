@@ -43,7 +43,7 @@ export const BILLING_NAVIGATION: NavigationItem[] = [
     href: "/main/plans-subscription",
   },
   {
-    label: "Usage & entitlements",
+    label: "Usage & bills",
     icon: Gauge,
     href: "/main/usage-entitlements",
   },
@@ -137,11 +137,11 @@ export const GENERIC_PAGE_CONFIG: Record<string, PageDefinition> = {
     description: "Choose the right plan for your organisation.",
     action: "Change plan",
   },
-  "Usage & entitlements": {
+  "Usage & bills": {
     icon: Gauge,
-    title: "Usage & entitlements",
-    description: "Monitor your usage across the current billing period.",
-    action: "View limits",
+    title: "Usage & bills",
+    description: "Monitor usage, estimated costs and previous bills.",
+    action: "View bills",
   },
   "Payment methods": {
     icon: CreditCard,

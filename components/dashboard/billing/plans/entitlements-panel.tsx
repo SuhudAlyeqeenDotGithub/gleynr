@@ -46,7 +46,7 @@ const EntitlementsPanel = ({ plan }: { plan: PlanDefinition }) => (
     </div>
     <p className="plans-footnote">
       <Info size={13} /> Allowances are shown as plan limits. Track consumption
-      in Usage &amp; entitlements. Demo data is illustrative.
+      in Usage &amp; bills. Demo data is illustrative.
     </p>
   </section>
 );

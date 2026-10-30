@@ -7,6 +7,7 @@ import GenericPage from "@/components/dashboard/pages/generic-page";
 import OverviewPage from "@/components/dashboard/overview/overview-page";
 import UsersPage from "@/components/dashboard/users/users-page";
 import PlansPage from "@/components/dashboard/billing/plans/plans-page";
+import UsageBillsPage from "@/components/dashboard/billing/usage-bills/usage-bills-page";
 import type { ModalType } from "@/lib/dashboard/types";
 import { toDashboardSites } from "@/lib/sites/selectors";
 import { useDashboardContext } from "./dashboard-context";
@@ -38,6 +39,8 @@ export const SectionRoute = ({ label }: { label: string }) => {
   if (label === "Plans & subscription") {
     return <PlansPage subscriptionStore={subscriptionStore} notify={notify} />;
   }
+
+  if (label === "Usage & bills") return <UsageBillsPage />;
 
   return (
     <>

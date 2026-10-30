@@ -90,7 +90,7 @@ const CurrentSubscription = ({
           <strong>This is not your total monthly cost.</strong> Additional usage
           charges apply on top of the base subscription price. Your final
           monthly bill is the base subscription price plus applicable usage
-          charges. Usage details are in Usage &amp; entitlements.
+          charges. Usage details are in Usage &amp; bills.
         </p>
       </div>
       {scheduledLabel && (
